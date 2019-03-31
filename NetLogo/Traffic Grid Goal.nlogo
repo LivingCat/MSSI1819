@@ -99,13 +99,14 @@ to setup
     set stops [self] of stopsAgentSet
     print stops
 
-     ;;change house and work colors
-    ask first stops[
-      set pcolor 100
-    ]
+    let i 26
 
-    ask last stops[
-      set pcolor 69
+    foreach stops[
+      [the-stop] -> ask the-stop[
+      set pcolor i
+      set i (i + 10)
+      print i
+      ]
     ]
 
 

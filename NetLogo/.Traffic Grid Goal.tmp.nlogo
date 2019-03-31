@@ -96,16 +96,19 @@ to setup
     ;;
     let stopsAgentSet n-of numStops goal-candidates
     print stopsAgentSet
-     stops [self] of stopsAgentSet
+    set stops [self] of stopsAgentSet
     print stops
 
-     ;;change house and work colors
-    ask first stops[
-      set pcolor 100
-    ]
 
-    ask last stops[
-      set pcolor 69
+
+    let i 26
+
+    foreach stops[
+      [the-turtle] -> ask the-turtle[
+      set pcolor i
+      set i (i + 10)
+      print i
+      ]
     ]
 
 
