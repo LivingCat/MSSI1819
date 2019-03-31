@@ -24,7 +24,7 @@ turtles-own
   goal      ;; where am I currently headed
 
   ;;new vars
-  friends
+  stops
 ]
 
 patches-own
@@ -81,22 +81,33 @@ to setup
     set-car-color ;; slower turtles are blue, faster ones are colored cyan
     record-data
     ;; choose at random a location for the house
-    set house one-of goal-candidates
+    ;;set house one-of goal-candidates
     ;; choose at random a location for work, make sure work is not located at same location as house
-    set work one-of goal-candidates with [ self != [ house ] of myself ]
+    ;;set work one-of goal-candidates with [ self != [ house ] of myself ]
     set goal work
 
-    ;;change house and work colors
-    ask house[
+    ;;set stops as an empty list
+    set stops []
+
+    ;;cada turtle tem um number of friends random
+    let numFriends random numFriendsMax
+    print numFriends
+    let numStops (numFriends + 2)
+    ;;
+    let stopsAgentSet n-of numStops goal-candidates
+    print stopsAgentSet
+     stops [self] of stopsAgentSet
+    print stops
+
+     ;;change house and work colors
+    ask first stops[
       set pcolor 100
     ]
 
-    ask work[
+    ask last stops[
       set pcolor 69
     ]
 
-    ;;set friends~as an empty list
-    set friends [];
 
 
   ]
@@ -743,7 +754,7 @@ numFriendsMax
 numFriendsMax
 0
 10
-1.0
+10.0
 1
 1
 NIL
