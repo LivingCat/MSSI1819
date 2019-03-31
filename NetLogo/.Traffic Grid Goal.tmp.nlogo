@@ -26,6 +26,7 @@ turtles-own
   ;;new vars
   stops     ;; all the stops the turtle has to make (house,friend1,friend2,....,work)
   indexStop ;; index of current goal
+  isReversing ;;after reaching the final destination, the turtles have to go back through all the stops
 ]
 
 patches-own
@@ -90,13 +91,10 @@ to setup
 
     ;;cada turtle tem um number of friends random
     let numFriends random numFriendsMax
-    print numFriends
     let numStops (numFriends + 2)
     ;;
     let stopsAgentSet n-of numStops goal-candidates
-    print stopsAgentSet
     set stops [self] of stopsAgentSet
-    print stops
 
     let i 26
 
@@ -104,7 +102,6 @@ to setup
       [the-stop] -> ask the-stop[
       set pcolor i
       set i (i + 10)
-      print i
       ]
     ]
 
@@ -112,6 +109,7 @@ to setup
     set goal first stops
     ;;set first index current stop
     set indexStop 0
+    set isReversing false
 
   ]
 
@@ -372,19 +370,38 @@ end
 ;; establish goal of driver and move to next patch along the way
 to-report next-patch
 
-    ;;if i am on my goal then i update my go
+    ;;if i am on my goal then i update my goal to the next stop
     if (member? patch-here [neighbors4] of goal)[
-    ifelse(indexStop < (length stops - 1))
+    ifelse(isReversing)
     [
-      set indexStop (indexStop + 1)
-      set goal (item indexStop stops)
+      ifelse(indexStop > 0)
+      [
+        set indexStop (indexStop - 1)
+        set goal (item indexStop stops)
+      ]
+      [
+      ;;come back to the first stop
+        set indexStop 1
+        set goal (item indexStop stops)
+        set isReversing false
+      ]
     ]
     [
-      ;;come back to the first stop
-      set indexStop 0
-      set goal first stops
+     ifelse(indexStop < (length stops - 1))
+      [
+        set indexStop (indexStop + 1)
+        set goal (item indexStop stops)
+      ]
+      [
+        ;;come back to the first stop
+        set indexStop
+        set goal first stops
+        set isReversing true
+      ]
     ]
   ]
+
+  print indexStop
 
   ;; CHOICES is an agentset of the candidate patches that the car can
   ;; move to (white patches are roads, green and red patches are lights)
@@ -393,8 +410,6 @@ to-report next-patch
   let choice min-one-of choices [ distance [ goal ] of myself ]
   ;; report the chosen patch
   report choice
-
-
 
 end
 
@@ -765,7 +780,7 @@ numFriendsMax
 numFriendsMax
 0
 10
-3.0
+4.0
 1
 1
 NIL
