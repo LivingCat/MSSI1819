@@ -118,8 +118,6 @@ to setup-globals
   ;; don't make acceleration 0.1 since we could get a rounding error and end up on a patch boundary
   set acceleration 0.099
 
-  ;;maximum number of friends a turtle can have
-  print numFriendsMax
 end
 
 ;; Make the patches have appropriate colors, set up the roads and intersections agentsets,
@@ -745,7 +743,7 @@ numFriendsMax
 numFriendsMax
 0
 10
-10.0
+1.0
 1
 1
 NIL
