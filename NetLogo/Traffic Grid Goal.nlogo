@@ -11,10 +11,12 @@ globals
   ;; patch agentsets
   intersections ;; agentset containing the patches that are intersections
   roads         ;; agentset containing the patches that are roads
-
 ]
 
-turtles-own
+breed[riders rider]
+breed[passengers passenger]
+
+riders-own
 [
   speed     ;; the speed of the turtle
   up-car?   ;; true if the turtle moves downwards and false if it moves to the right
@@ -26,7 +28,7 @@ turtles-own
   ;;new vars
   stops     ;; all the stops the turtle has to make (house,friend1,friend2,....,work)
   indexStop ;; index of current goal
-  isReversing ;;after reaching the final destination, the turtles have to go back through all the stops
+  isReversing ;;after reaching the final destination, the riders have to go back through all the stops
 ]
 
 patches-own
@@ -49,7 +51,7 @@ patches-own
 ;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Initialize the display by giving the global and patch variables initial values.
-;; Create num-cars of turtles if there are enough road patches for one turtle to
+;; Create num-cars of riders if there are enough road patches for one turtle to
 ;; be created per road patch.
 to setup
 
@@ -64,8 +66,8 @@ to setup
   ]
   ask one-of intersections [ become-current ]
 
-  set-default-shape turtles "car"
-
+  set-default-shape riders "car"
+  set-default-shape passengers "person"
   if (num-cars > count roads) [
     user-message (word
       "There are too many cars for the amount of "
@@ -77,10 +79,14 @@ to setup
     stop
   ]
 
+  create-passengers num-passengers [
+
+   ]
+
   ;; Now create the cars and have each created car call the functions setup-cars and set-car-color
-  create-turtles num-cars [
+  create-riders num-cars [
     setup-cars
-    set-car-color ;; slower turtles are blue, faster ones are colored cyan
+    set-car-color ;; slower riders are blue, faster ones are colored cyan
     record-data
     ;; choose at random a location for the house
     ;;set house one-of goal-candidates
@@ -105,6 +111,8 @@ to setup
       ]
     ]
 
+
+
     ;;set first goal "house"
     set goal first stops
     ;;set first index current stop
@@ -113,11 +121,13 @@ to setup
 
   ]
 
-  ;; give the turtles an initial speed
-  ask turtles [ set-car-speed ]
+  ;; give the riders an initial speed
+  ask riders [ set-car-speed ]
 
   reset-ticks
 end
+
+
 
 ;; Initialize the global variables to appropriate values
 to setup-globals
@@ -195,9 +205,13 @@ to setup-cars  ;; turtle procedure
     [ set heading 90 ]
 end
 
-;; Find a road patch without any turtles on it and place the turtle there.
+to setup-passengers
+
+end
+
+;; Find a road patch without any riders on it and place the turtle there.
 to put-on-empty-road  ;; turtle procedure
-  move-to one-of roads with [ not any? turtles-on self ]
+  move-to one-of roads with [ not any? riders-on self ]
 end
 
 
@@ -216,7 +230,7 @@ to go
 
   ;; set the cars’ speed, move them forward their speed, record data for plotting,
   ;; and set the color of the cars to an appropriate color based on their speed
-  ask turtles [
+  ask riders [
     face next-patch ;; car heads towards its goal
     set-car-speed
     fd speed
@@ -289,7 +303,7 @@ to set-signal-colors  ;; intersection (patch) procedure
   ]
 end
 
-;; set the turtles' speed based on whether they are at a red traffic light or the speed of the
+;; set the riders' speed based on whether they are at a red traffic light or the speed of the
 ;; turtle (if any) on the patch in front of them
 to set-car-speed  ;; turtle procedure
   ifelse pcolor = red [
@@ -303,19 +317,19 @@ to set-car-speed  ;; turtle procedure
 end
 
 ;; set the speed variable of the turtle to an appropriate value (not exceeding the
-;; speed limit) based on whether there are turtles on the patch in front of the turtle
+;; speed limit) based on whether there are riders on the patch in front of the turtle
 to set-speed [ delta-x delta-y ]  ;; turtle procedure
-  ;; get the turtles on the patch in front of the turtle
-  let turtles-ahead turtles-at delta-x delta-y
+  ;; get the riders on the patch in front of the turtle
+  let riders-ahead riders-at delta-x delta-y
 
-  ;; if there are turtles in front of the turtle, slow down
+  ;; if there are riders in front of the turtle, slow down
   ;; otherwise, speed up
-  ifelse any? turtles-ahead [
-    ifelse any? (turtles-ahead with [ up-car? != [ up-car? ] of myself ]) [
+  ifelse any? riders-ahead [
+    ifelse any? (riders-ahead with [ up-car? != [ up-car? ] of myself ]) [
       set speed 0
     ]
     [
-      set speed [speed] of one-of turtles-ahead
+      set speed [speed] of one-of riders-ahead
       slow-down
     ]
   ]
@@ -415,7 +429,7 @@ end
 
 to watch-a-car
   stop-watching ;; in case we were previously watching another car
-  watch one-of turtles
+  watch one-of riders
   ask subject [
 
     inspect self
@@ -445,7 +459,7 @@ to stop-watching
     set plabel ""
   ]
   ;; make sure we close all turtle inspectors that may have been opened
-  ask turtles [
+  ask riders [
     set label ""
     stop-inspecting self
   ]
@@ -479,8 +493,8 @@ GRAPHICS-WINDOW
 1
 1
 0
-1
-1
+0
+0
 1
 -18
 18
@@ -508,7 +522,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot mean [wait-time] of turtles"
+"default" 1.0 0 -16777216 true "" "plot mean [wait-time] of riders"
 
 PLOT
 228
@@ -526,7 +540,7 @@ true
 false
 "set-plot-y-range 0 speed-limit" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot mean [speed] of turtles"
+"default" 1.0 0 -16777216 true "" "plot mean [speed] of riders"
 
 SLIDER
 110
@@ -781,6 +795,21 @@ numFriendsMax
 0
 10
 4.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+795
+125
+967
+158
+num-passengers
+num-passengers
+0
+10
+10.0
 1
 1
 NIL
