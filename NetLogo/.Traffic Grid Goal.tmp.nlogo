@@ -164,7 +164,7 @@ to setup-patches
 
    ask roads [
 
-    if pxcor = min-pxcor and pycor = min-pycor[
+    if pxcor = min-pxcor and pycor = [
        print 3
       set pcolor black
     ]
