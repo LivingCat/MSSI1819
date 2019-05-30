@@ -11,6 +11,7 @@ globals
   ;; patch agentsets
   intersections ;; agentset containing the patches that are intersections
   roads         ;; agentset containing the patches that are roads
+  feup
 ]
 
 
@@ -78,6 +79,7 @@ to setup
   ]
 
 
+
   ;; Now create the cars and have each created car call the functions setup-cars and set-car-color
   create-turtles num-cars [
     setup-cars
@@ -95,10 +97,15 @@ to setup
     let numStops (numFriends + 2)
     ;;
     let stopsAgentSet n-of numStops goal-candidates
-    set stops [self] of stopsAgentSet
+
+    ;let stopsAgentSet n-of numStops goal-candidates
+    set stops [self] of (patch-set stopsAgentSet)
+    set stops lput feup stops
+
+    ;set stops [self] feup(list
 
     let i 26
-
+    show stops
     foreach stops[
       [the-stop] -> ask the-stop[
       set pcolor i
@@ -165,7 +172,7 @@ to setup-patches
    ask roads [
 
     if pxcor = min-pxcor and pycor = min-pycor[
-       print 3
+      set feup self
       set pcolor black
     ]
     ]
@@ -427,6 +434,7 @@ to-report next-patch
     ]
   ]
 
+  print goal
   ;; CHOICES is an agentset of the candidate patches that the car can
   ;; move to (white patches are roads, green and red patches are lights)
   let choices neighbors with [ pcolor = white or pcolor = red or pcolor = green ]
@@ -602,7 +610,7 @@ num-cars
 num-cars
 1
 400
-3.0
+1.0
 1
 1
 NIL
