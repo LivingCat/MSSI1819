@@ -403,8 +403,8 @@ to next-phase
 end
 
 to remove-turtles-at-goal
-  let patchAt patch-at 0 0
-  if([pxcor] of patchAt = [pxcor] of feup and [pycor] of patchAt = [pycor] of feup) [
+   patch-at 0 0
+  if(xcor = [pxcor] of feup and ycor = [pycor] of feup) [
     die
   ]
 end
