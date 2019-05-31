@@ -94,7 +94,7 @@ to setup
 
     ;;cada turtle tem um number of friends random
     let numFriends random numFriendsMax
-    let numStops (numFriends + 2)
+    let numStops numFriends
     ;;
     let stopsAgentSet n-of numStops goal-candidates
 
@@ -403,43 +403,47 @@ end
 ;; establish goal of driver and move to next patch along the way
 to-report next-patch
 
+  let goalx 0
+  let goaly 0
+  let feupx 0
+  let feupy 0
+
     ;;if i am on my goal then i update my goal to the next stop
-    if (member? patch-here [neighbors4] of goal)[
-    ifelse(isReversing)
+    if (member? patch-here [neighbors4] of goal)
     [
-      ifelse(indexStop > 0)
-      [
-        set indexStop (indexStop - 1)
-        set goal (item indexStop stops)
-      ]
-      [
-      ;;come back to the first stop
-        set indexStop 1
-        set goal (item indexStop stops)
-        set isReversing false
-      ]
-    ]
-    [
+    print stops
      ifelse(indexStop < (length stops - 1))
       [
+        print indexStop
         set indexStop (indexStop + 1)
         set goal (item indexStop stops)
       ]
-      [
-        ;;come back to the first stop
-        set indexStop (length stops - 2)
-        set goal (item indexStop stops)
-        set isReversing true
-      ]
-    ]
-  ]
+    [
+      print "x-cor"
+      show [xcor] of goal
 
-  print goal
+      ;print goalx
+      ;print feupx
+      ;print goaly
+      ;print feupy
+
+      print feup
+      if(goalx = feupx and goaly = feupy) [
+         report feup
+      ]
+
+    ]
+    ]
+
+
   ;; CHOICES is an agentset of the candidate patches that the car can
   ;; move to (white patches are roads, green and red patches are lights)
   let choices neighbors with [ pcolor = white or pcolor = red or pcolor = green ]
   ;; choose the patch closest to the goal, this is the patch the car will move to
+
   let choice min-one-of choices [ distance [ goal ] of myself ]
+  print choice
+
   ;; report the chosen patch
   report choice
 
@@ -812,7 +816,7 @@ numFriendsMax
 numFriendsMax
 0
 10
-4.0
+0.0
 1
 1
 NIL
@@ -827,7 +831,7 @@ num-passengers
 num-passengers
 0
 10
-10.0
+1.0
 1
 1
 NIL
