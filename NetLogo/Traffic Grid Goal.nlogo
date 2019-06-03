@@ -220,12 +220,15 @@ to setup-cars  ;; turtle procedure
 
   let i 0
   print "yay"
-  calculate-intersections [pxcor] of feup [pycor] of feup 30
-
+  let possible-locations calculate-intersections [pxcor] of feup [pycor] of feup 30
+  let possible-locations-set no-patches
+  foreach possible-locations [x -> set possible-locations-set (patch-set possible-locations-set x)
+  print possible-locations-set]
+  move-to one-of possible-locations-set  with [ not any? turtles-on self ]
 
 end
 
-to calculate-intersections [xfeup yfeup distancia]
+to-report calculate-intersections [xfeup yfeup distancia]
   let result (list)
   let left-roads patches with [
     ((floor ((pxcor + max-pxcor - floor (grid-x-inc - 1)) mod grid-x-inc) = 0) or
@@ -249,9 +252,9 @@ to calculate-intersections [xfeup yfeup distancia]
     [set result lput patch pxcor item 0 intersect result]
   ]
 
-  ;report result
   foreach result [x -> ask x [set pcolor black]]
-  print result
+  report result
+  ;print result
 end
 
 
@@ -688,7 +691,7 @@ num-cars
 num-cars
 1
 400
-1.0
+17.0
 1
 1
 NIL
