@@ -108,8 +108,8 @@ to setup
     show stops
     foreach stops[
       [the-stop] -> ask the-stop[
-      set pcolor i
-      set i (i + 10)
+        set pcolor i
+        set i (i + 10)
       ]
     ]
 
@@ -169,13 +169,13 @@ to setup-patches
 
   ask roads [ set pcolor white ]
 
-   ask roads [
+  ask roads [
 
     if pxcor = min-pxcor and pycor = min-pycor[
       set feup self
       set pcolor black
     ]
-    ]
+  ]
   setup-intersections
 
 end
@@ -199,39 +199,65 @@ end
 to setup-cars  ;; turtle procedure
   set speed 0
   set wait-time 0
+
   put-on-empty-road
+
+
   ifelse intersection? [
     ifelse random 2 = 0
       [ set up-car? true ]
-      [ set up-car? false ]
+    [ set up-car? false ]
   ]
   [ ; if the turtle is on a vertical road (rather than a horizontal one)
     ifelse (floor ((pxcor + max-pxcor - floor(grid-x-inc - 1)) mod grid-x-inc) = 0)
       [ set up-car? true ]
-      [ set up-car? false ]
+    [ set up-car? false ]
   ]
   ifelse up-car?
     [ set heading 180 ]
-    [ set heading 90 ]
+  [ set heading 90 ]
 
-  let cluster choose-cluster
-  setup-cluster-vars cluster
+
 end
 
 ;; Find a road patch without any turtles on it and place the turtle there.
 to put-on-empty-road  ;; turtle procedure
-  move-to one-of roads with [ not any? turtles-on self ]
+
+  let cluster choose-cluster
+
+  let distanceToFeup setup-cluster-vars cluster ;; calculate distance to feup
+  print "distanceToFeup"
+  print distanceToFeup + 20
+
+
+  let roadChoosen random (grid-size-x + grid-size-y) ;; select random road
+  print "roadChoosen"
+  print roadChoosen
+
+  ;set distanceToFeup 23
+  move-to one-of roads with [
+    (sqrt (((pxcor + 18) ^ 2) + ((pycor + 18) ^ 2))) <  (distanceToFeup + 15) and
+    (sqrt (((pxcor + 18) ^ 2) + ((pycor + 18) ^ 2))) >  distanceToFeup and
+    not any? turtles-on self
+  ]
+
+
+
 end
 
 to-report choose-cluster
   let cluster random 2
   report cluster
 end
-to setup-cluster-vars [cluster]
-  if cluster = 0 [
-    let distance0 random-gamma 1.11150229716248 10.18641369534402
-    print distance0
-  ]
+to-report setup-cluster-vars [cluster]
+
+
+  ; if cluster = 0 [
+  let alpha 1.11150229716248
+  let lambda  10.18641369534402
+  report random-gamma alpha (1 / lambda)
+  ;; ]
+
 end
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -331,14 +357,14 @@ to set-car-speed  ;; turtle procedure
   [
     ifelse up-car?
       [ set-speed 0 -1 ]
-      [ set-speed 1 0 ]
+    [ set-speed 1 0 ]
   ]
 end
 
 ;; set the speed variable of the turtle to an appropriate value (not exceeding the
 ;; speed limit) based on whether there are turtles on the patch in front of the turtle
 to set-speed [ delta-x delta-y ]  ;; turtle procedure
-  ;; get the turtles on the patch in front of the turtle
+                                  ;; get the turtles on the patch in front of the turtle
   let turtles-ahead turtles-at delta-x delta-y
 
   ;; if there are turtles in front of the turtle, slow down
@@ -359,21 +385,21 @@ end
 to slow-down  ;; turtle procedure
   ifelse speed <= 0
     [ set speed 0 ]
-    [ set speed speed - acceleration ]
+  [ set speed speed - acceleration ]
 end
 
 ;; increase the speed of the car
 to speed-up  ;; turtle procedure
   ifelse speed > speed-limit
     [ set speed speed-limit ]
-    [ set speed speed + acceleration ]
+  [ set speed speed + acceleration ]
 end
 
 ;; set the color of the car to a different color based on how fast the car is moving
 to set-car-color  ;; turtle procedure
   ifelse speed < (speed-limit / 2)
     [ set color blue ]
-    [ set color cyan - 2 ]
+  [ set color cyan - 2 ]
 end
 
 ;; keep track of the number of stopped cars and the amount of time a car has been stopped
@@ -403,8 +429,8 @@ end
 ;; establish goal of driver and move to next patch along the way
 to-report next-patch
 
-    ;;if i am on my goal then i update my goal to the next stop
-    if (member? patch-here [neighbors4] of goal)[
+  ;;if i am on my goal then i update my goal to the next stop
+  if (member? patch-here [neighbors4] of goal)[
     ifelse(isReversing)
     [
       ifelse(indexStop > 0)
@@ -413,14 +439,14 @@ to-report next-patch
         set goal (item indexStop stops)
       ]
       [
-      ;;come back to the first stop
+        ;;come back to the first stop
         set indexStop 1
         set goal (item indexStop stops)
         set isReversing false
       ]
     ]
     [
-     ifelse(indexStop < (length stops - 1))
+      ifelse(indexStop < (length stops - 1))
       [
         set indexStop (indexStop + 1)
         set goal (item indexStop stops)
@@ -434,7 +460,7 @@ to-report next-patch
     ]
   ]
 
-  print goal
+  ;;print goal
   ;; CHOICES is an agentset of the candidate patches that the car can
   ;; move to (white patches are roads, green and red patches are lights)
   let choices neighbors with [ pcolor = white or pcolor = red or pcolor = green ]
@@ -610,7 +636,7 @@ num-cars
 num-cars
 1
 400
-1.0
+21.0
 1
 1
 NIL
@@ -812,7 +838,7 @@ numFriendsMax
 numFriendsMax
 0
 10
-4.0
+8.0
 1
 1
 NIL
