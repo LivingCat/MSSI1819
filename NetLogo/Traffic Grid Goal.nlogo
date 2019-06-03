@@ -220,7 +220,7 @@ to setup-cars  ;; turtle procedure
 
   let i 0
   print "yay"
-  calculate-intersections [pxcor] of feup [pycor] of feup 50
+  calculate-intersections [pxcor] of feup [pycor] of feup 30
 
 
 end
