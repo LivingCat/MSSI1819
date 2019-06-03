@@ -94,7 +94,7 @@ to setup
 
     ;;cada turtle tem um number of friends random
     let numFriends random numFriendsMax
-    let numStops (numFriends + 2)
+    let numStops numFriends
     ;;
     let stopsAgentSet n-of numStops goal-candidates
 
@@ -105,7 +105,6 @@ to setup
     ;set stops [self] feup(list
 
     let i 26
-    show stops
     foreach stops[
       [the-stop] -> ask the-stop[
         set pcolor i
@@ -276,6 +275,9 @@ to go
   ;; set the cars’ speed, move them forward their speed, record data for plotting,
   ;; and set the color of the cars to an appropriate color based on their speed
   ask turtles [
+    remove-turtles-at-goal
+  ]
+  ask turtles [
     face next-patch ;; car heads towards its goal
     set-car-speed
     fd speed
@@ -426,46 +428,49 @@ to next-phase
   if phase mod ticks-per-cycle = 0 [ set phase 0 ]
 end
 
+to remove-turtles-at-goal
+  let patchAt patch-at 0 0
+  if([pxcor] of patchAt = [pxcor] of feup and [pycor] of patchAt = [pycor] of feup) [
+    die
+  ]
+end
+
 ;; establish goal of driver and move to next patch along the way
 to-report next-patch
 
-  ;;if i am on my goal then i update my goal to the next stop
-  if (member? patch-here [neighbors4] of goal)[
-    ifelse(isReversing)
-    [
-      ifelse(indexStop > 0)
-      [
-        set indexStop (indexStop - 1)
-        set goal (item indexStop stops)
-      ]
-      [
-        ;;come back to the first stop
-        set indexStop 1
-        set goal (item indexStop stops)
-        set isReversing false
-      ]
-    ]
+  let goalx 0
+  let goaly 0
+  let feupx 0
+  let feupy 0
+
+    ;;if i am on my goal then i update my goal to the next stop
+    if (member? patch-here [neighbors4] of goal)
     [
       ifelse(indexStop < (length stops - 1))
       [
         set indexStop (indexStop + 1)
         set goal (item indexStop stops)
       ]
-      [
-        ;;come back to the first stop
-        set indexStop (length stops - 2)
-        set goal (item indexStop stops)
-        set isReversing true
-      ]
-    ]
-  ]
+    [
+      set feupx [pxcor] of feup
+      set feupy [pycor] of feup
+      set goalx [pxcor] of goal
+      set goaly [pycor] of goal
 
-  ;;print goal
+      if(goalx = feupx and goaly = feupy) [
+        report feup
+      ]
+
+    ]
+    ]
+
   ;; CHOICES is an agentset of the candidate patches that the car can
   ;; move to (white patches are roads, green and red patches are lights)
   let choices neighbors with [ pcolor = white or pcolor = red or pcolor = green ]
   ;; choose the patch closest to the goal, this is the patch the car will move to
+
   let choice min-one-of choices [ distance [ goal ] of myself ]
+
   ;; report the chosen patch
   report choice
 
@@ -636,7 +641,7 @@ num-cars
 num-cars
 1
 400
-21.0
+3.0
 1
 1
 NIL
@@ -838,7 +843,7 @@ numFriendsMax
 numFriendsMax
 0
 10
-8.0
+0.0
 1
 1
 NIL
@@ -853,7 +858,7 @@ num-passengers
 num-passengers
 0
 10
-10.0
+0.0
 1
 1
 NIL
