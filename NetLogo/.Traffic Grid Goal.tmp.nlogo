@@ -213,8 +213,80 @@ to setup-cars  ;; turtle procedure
     [ set heading 180 ]
     [ set heading 90 ]
 
+
   let cluster choose-cluster
   setup-cluster-vars cluster
+  let distancia 10
+
+  let i 0
+  print "yay"
+  calculate-intersections [pxcor] of feup [pycor] of feup 40
+
+
+end
+
+to calculate-intersections [xfeup yfeup distancia]
+  let result (list)
+  let left-roads patches with [
+    ((floor ((pxcor + max-pxcor - floor (grid-x-inc - 1)) mod grid-x-inc) = 0) or
+    (floor ((pycor + max-pycor) mod grid-y-inc) = 0)) and pxcor = min-pxcor
+  ]
+
+  ask left-roads [
+    let intersect calculate-intersections-y [pxcor] of feup [pycor] of feup  [pycor] of self
+    if(length intersect > 0)
+    [set result lput patch item 0 intersect pycor result]
+  ]
+
+  let top-roads patches with [
+    ((floor ((pxcor + max-pxcor - floor (grid-x-inc - 1)) mod grid-x-inc) = 0) or
+    (floor ((pycor + max-pycor) mod grid-y-inc) = 0)) and pycor = max-pycor
+  ]
+
+   ask top-roads [
+    let intersect calculate-intersections-x [pxcor] of feup [pycor] of feup 35 [pxcor] of self
+    if(length intersect > 0)
+    [set result lput patch pxcor item 0 intersect result]
+  ]
+
+  ;report result
+  foreach result [x -> ask x [set pcolor black]]
+  print result
+end
+
+
+to-report calculate-intersections-y [xfeup yfeup distancia yestrada]
+  let result (list)
+  if((-2 * xfeup) ^ 2 - 4 * (xfeup ^ 2 - (distancia ^ 2 - (yestrada - yfeup) ^ 2))) < 0
+  [report result]
+  let x1 (2 * xfeup - sqrt((-2 * xfeup) ^ 2 - 4 * (xfeup ^ 2 - (distancia ^ 2 - (yestrada - yfeup) ^ 2)))) / 2
+  if(x1 > min-pxcor and x1 < max-pxcor)
+  [
+    set result lput x1 result
+  ]
+  let x2 (2 * xfeup + sqrt((-2 * xfeup) ^ 2 - 4 * (xfeup ^ 2 - (distancia ^ 2 - (yestrada - yfeup) ^ 2)))) / 2
+   if(x2 > min-pxcor and x2 < max-pxcor)
+  [
+    set result lput x2 result
+  ]
+  report result
+end
+
+to-report calculate-intersections-x [xfeup yfeup distancia xestrada]
+  let result (list)
+  if((-2 * xfeup) ^ 2 - 4 * (xfeup ^ 2 - (distancia ^ 2 - (xestrada - yfeup) ^ 2))) < 0
+  [report result]
+  let x1 (2 * xfeup - sqrt((-2 * xfeup) ^ 2 - 4 * (xfeup ^ 2 - (distancia ^ 2 - (xestrada - yfeup) ^ 2)))) / 2
+  if(x1 > min-pycor and x1 < max-pycor)
+  [
+    set result lput x1 result
+  ]
+  let x2 (2 * xfeup + sqrt((-2 * xfeup) ^ 2 - 4 * (xfeup ^ 2 - (distancia ^ 2 - (xestrada - yfeup) ^ 2)))) / 2
+   if(x2 > min-pycor and x2 < max-pycor)
+  [
+    set result lput x2 result
+  ]
+  report result
 end
 
 ;; Find a road patch without any turtles on it and place the turtle there.
@@ -403,8 +475,8 @@ to next-phase
 end
 
 to remove-turtles-at-goal
-   patch-at 0 0
-  if(xcor = [pxcor] of feup and ycor = [pycor] of feup) [
+  let patchAt patch-at 0 0
+  if([pxcor] of patchAt = [pxcor] of feup and [pycor] of patchAt = [pycor] of feup) [
     die
   ]
 end
@@ -616,7 +688,7 @@ num-cars
 num-cars
 1
 400
-3.0
+1.0
 1
 1
 NIL
