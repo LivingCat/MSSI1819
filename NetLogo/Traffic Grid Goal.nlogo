@@ -214,33 +214,21 @@ to setup-cars  ;; turtle procedure
     [ set heading 90 ]
 
 
-  let distancia get-distance-to-feup
-  print "distance"
-  print distancia
-  put-on-empty-road
-
-  ;print "start"
-  ;foreach (range 100) [print get-distance-to-feup ]
-  ;print "end"
 
 
-  let i 0
-  print "yay"
-  let possible-locations calculate-intersections [pxcor] of feup [pycor] of feup 30
   let possible-locations-set no-patches
-  foreach possible-locations [x -> set possible-locations-set (patch-set possible-locations-set x)
-  print possible-locations-set]
-  move-to one-of possible-locations-set  with [ not any? turtles-on self ]
-  
-  ;calculate-intersections [pxcor] of feup [pycor] of feup 30
 
-; calculate-intersections alternative
-;   ask roads with [
-;    (sqrt (((pxcor + max-pxcor) ^ 2) + ((pycor + max-pycor) ^ 2))) <  (30 + 0.5) and
-;    (sqrt (((pxcor + max-pxcor) ^ 2) + ((pycor + max-pycor) ^ 2))) >  (30 - 0.5)
-;  ]
-;  [set pcolor black]
+  while [count (possible-locations-set with [ not any? turtles-on self ]) = 0]
+  [
+    let distance-to-feup get-distance-to-feup
+    let possible-locations calculate-intersections ([pxcor] of feup) ([pycor] of feup) distance-to-feup
+    set possible-locations-set no-patches
+    foreach possible-locations [x -> set possible-locations-set (patch-set possible-locations-set x)
+      print possible-locations-set]
 
+  ]
+
+   move-to one-of possible-locations-set  with [ not any? turtles-on self ]
 
 end
 
@@ -268,7 +256,7 @@ to-report calculate-intersections [xfeup yfeup distancia]
     [set result lput patch pxcor item 0 intersect result]
   ]
 
-  foreach result [x -> ask x [set pcolor black]]
+  ;foreach result [x -> ask x [set pcolor black]]
   report result
   ;print result
 end
@@ -736,7 +724,7 @@ num-cars
 num-cars
 1
 400
-17.0
+99.0
 1
 1
 NIL
