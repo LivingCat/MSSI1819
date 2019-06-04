@@ -198,7 +198,7 @@ end
 to setup-cars  ;; turtle procedure
   set speed 0
   set wait-time 0
-  put-on-empty-road
+
   ifelse intersection? [
     ifelse random 2 = 0
       [ set up-car? true ]
@@ -214,9 +214,11 @@ to setup-cars  ;; turtle procedure
     [ set heading 90 ]
 
 
-  let cluster choose-cluster
-  setup-cluster-vars cluster
-  let distancia 10
+  let distancia get-distance-to-feup
+  print "distance"
+  print distancia
+  put-on-empty-road
+
 
   let i 0
   print "yay"
@@ -225,6 +227,16 @@ to setup-cars  ;; turtle procedure
   foreach possible-locations [x -> set possible-locations-set (patch-set possible-locations-set x)
   print possible-locations-set]
   move-to one-of possible-locations-set  with [ not any? turtles-on self ]
+  
+  ;calculate-intersections [pxcor] of feup [pycor] of feup 30
+
+; calculate-intersections alternative
+;   ask roads with [
+;    (sqrt (((pxcor + max-pxcor) ^ 2) + ((pycor + max-pycor) ^ 2))) <  (30 + 0.5) and
+;    (sqrt (((pxcor + max-pxcor) ^ 2) + ((pycor + max-pycor) ^ 2))) >  (30 - 0.5)
+;  ]
+;  [set pcolor black]
+
 
 end
 
@@ -297,15 +309,42 @@ to put-on-empty-road  ;; turtle procedure
   move-to one-of roads with [ not any? turtles-on self ]
 end
 
-to-report choose-cluster
-  let cluster random 2
-  report cluster
-end
-to setup-cluster-vars [cluster]
-  if cluster = 0 [
-    let distance0 random-gamma 1.11150229716248 10.18641369534402
-    print distance0
+
+
+to-report get-distance-to-feup
+  let cluster random 8
+
+  ;; gamma-values has alpha lambda 1-percentile 99-percentile
+  let gamma-values [
+    [1.1115022971624800 0.09816997717 0.170626425	49.46164323]
+    [1.1230955616184066 0.09319105317 0.188534124	52.37843607]
+    [2.9336791010654757 2.06130526549 0.200574976	4.023409760]
+    [1.5774280653014760 0.10067907987 0.683103823	57.87916990]
+    [0.6704063202145226 0.08264474742 0.010812230	45.95371822]
+    [1.0998642740712024 0.07605486588 0.209738185	63.50558397]
+    [0.9972550439242437 0.07672745832 0.129179405	59.93797531]
+    [4.3890765134902980 3.09703304149 0.320843180	3.441911164]
   ]
+  let selected-cluster item cluster gamma-values
+  let alpha item 0 selected-cluster
+  let lambda item 1 selected-cluster
+  let bottom-percentile item 2 selected-cluster
+  let top-percentile item 3 selected-cluster
+
+  let distance0 0
+  while [distance0 < bottom-percentile or  distance0 > top-percentile]
+  [
+    set distance0 random-gamma alpha lambda
+  ]
+  let new-min 0 ; it may be greater than 0 to avoid being to close to feup
+  let old-range (top-percentile - bottom-percentile)
+  let new-range (sqrt (world-width ^ 2 + world-height ^ 2 )) - new-min
+  let distance-patches (((distance0 - bottom-percentile) * new-range) / old-range) + new-min
+
+
+
+  report distance-patches
+
 end
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
