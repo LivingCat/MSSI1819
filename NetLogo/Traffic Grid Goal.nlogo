@@ -219,6 +219,10 @@ to setup-cars  ;; turtle procedure
   print distancia
   put-on-empty-road
 
+  ;print "start"
+  ;foreach (range 100) [print get-distance-to-feup ]
+  ;print "end"
+
 
   let i 0
   print "yay"
@@ -328,11 +332,13 @@ to-report get-distance-to-feup
   let selected-cluster item cluster gamma-values
   let alpha item 0 selected-cluster
   let lambda item 1 selected-cluster
-  let bottom-percentile item 2 selected-cluster
-  let top-percentile item 3 selected-cluster
+
+
+  let bottom-percentile 0.010812230 ;; lowest 1-percentile
+  let top-percentile  63.50558397 ;; highest 99-percentile
 
   let distance0 0
-  while [distance0 < bottom-percentile or  distance0 > top-percentile]
+  while [distance0 < bottom-percentile or  distance0 > top-percentile] ;; if its not in that range, another value is calculated
   [
     set distance0 random-gamma alpha lambda
   ]
