@@ -31,9 +31,12 @@ turtles-own
   ;;new vars
   stops     ;; all the stops the turtle has to make (house,friend1,friend2,....,work)
   indexStop ;; index of current goal
-  isReversing ;;after reaching the final destination, the turtles have to go back through all the stops
-
   co-emissions-car
+  capacity ;;car seats available
+  been-matched ;;true if turtle was already matched in the macthing phase, false otherwise
+  rider ;;true if has car
+  matches ;;passengers the turtle needs to pick up
+
 ]
 
 patches-own
@@ -91,6 +94,12 @@ to setup
 
   ;; Now create the cars and have each created car call the functions setup-cars and set-car-color
   create-turtles num-cars [
+
+    set been-matched false
+    set capacity 3
+    set rider false
+    set stops []
+
     setup-cars
     set-car-color ;; slower turtles are blue, faster ones are colored cyan
     record-data
@@ -99,41 +108,41 @@ to setup
     ;; choose at random a location for work, make sure work is not located at same location as house
 
     ;;set stops as an empty list
-    set stops []
+    ;set stops []
 
     ;;cada turtle tem um number of friends random
-    let numFriends random numFriendsMax
-    let numStops numFriends
+    ;let numFriends random numFriendsMax
+    ;let numStops numFriends
     ;;
-    let stopsAgentSet n-of numStops goal-candidates
+    ;let stopsAgentSet n-of numStops goal-candidates
 
     ;let stopsAgentSet n-of numStops goal-candidates
-    set stops [self] of (patch-set stopsAgentSet)
-    set stops lput feup stops
+    ;set stops [self] of (patch-set stopsAgentSet)
+    ;set stops lput feup stops
 
     ;set stops [self] feup(list
 
-    let i 26
-    foreach stops[
-      [the-stop] -> ask the-stop[
-      set pcolor i
-      set i (i + 10)
-      ]
-    ]
-
-
+    ;let i 26
+    ;foreach stops[
+     ; [the-stop] -> ask the-stop[
+      ;set pcolor i
+      ;set i (i + 10)
+      ;]
+    ;]
 
     ;;set first goal "house"
-    set goal first stops
+    ;set goal first stops
     ;;set first index current stop
-    set indexStop 0
-    set isReversing false
+    ;set indexStop 0
+
+
 
   ]
 
   ;; give the turtles an initial speed
   ask turtles [ set-car-speed ]
-
+  random-matching
+  set-stops
   reset-ticks
 end
 
@@ -180,7 +189,7 @@ to setup-patches
 
    ask roads [
 
-    if pxcor = min-pxcor and pycor = min-pycor[
+    if pxcor = max-pxcor and pycor = min-pycor[
       set feup self
       set pcolor black
     ]
@@ -234,14 +243,84 @@ to setup-cars  ;; turtle procedure
     let distance-to-feup get-distance-to-feup cluster
     let possible-locations calculate-intersections ([pxcor] of feup) ([pycor] of feup) distance-to-feup
     set possible-locations-set no-patches
-    foreach possible-locations [x -> set possible-locations-set (patch-set possible-locations-set x)
-      print possible-locations-set]
+    foreach possible-locations [x -> set possible-locations-set (patch-set possible-locations-set x)]
 
   ]
 
    move-to one-of possible-locations-set  with [ not any? turtles-on self ]
 
 end
+
+to set-stops
+  ask turtles with [rider = true] [
+
+    ;foreach matches [
+     ; [match] ->
+      ;set stops lput [patch-here] of match stops
+      ;ask match [die]
+    ;]
+    print "matches"
+    show matches
+    ask matches [
+      ifelse(member? patch-here intersections)
+      [
+      print "eu sou uma match e tou em"
+      show patch-here
+      let match-patch patch-here
+      let neigh [neighbors] of match-patch
+      let not-roads neigh with [not member? self roads]
+      let neighbor one-of not-roads
+      ask myself[ set stops lput neighbor stops]
+      ]
+      [
+            print "eu sou uma match e tou em"
+      show patch-here
+      let match-patch patch-here
+      let neigh [neighbors4] of match-patch
+      let not-roads neigh with [not member? self roads]
+      let neighbor one-of not-roads
+      ask myself[ set stops lput neighbor stops]
+      ]
+
+      die
+    ]
+
+   set stops lput feup stops
+    show stops
+
+    let i 26
+    foreach stops[
+      [the-stop] -> ask the-stop[
+      set pcolor i
+      set i (i + 10)
+      ]
+    ]
+
+    ;;set first goal "house"
+    set goal first stops
+    ;;set first index current stop
+    set indexStop 0
+
+  ]
+
+end
+
+to random-matching
+  ask turtles [
+    ;only turtles that haven't been matched can become riders and take passengers
+    if(been-matched = false) [
+      let num min (list capacity count turtles with [been-matched = false and self != myself])
+      let aux-matches  n-of num turtles with [been-matched = false and self != myself]
+      ask aux-matches [
+        set been-matched true
+      ]
+      set been-matched true
+      set rider true
+      set matches aux-matches
+    ]
+  ]
+end
+
 
 to-report calculate-intersections [xfeup yfeup distancia]
   let result (list)
@@ -267,9 +346,9 @@ to-report calculate-intersections [xfeup yfeup distancia]
     [set result lput patch pxcor item 0 intersect result]
   ]
 
+  ;set result filter [not member? self intersections] result
   ;foreach result [x -> ask x [set pcolor black]]
   report result
-  ;print result
 end
 
 
@@ -546,49 +625,35 @@ to next-phase
 end
 
 to remove-turtles-at-goal
-  let patchAt patch-at 0 0
-  if([pxcor] of patchAt = [pxcor] of feup and [pycor] of patchAt = [pycor] of feup) [
-    die
+  ;;if i am on my goal then i update my go
+    if (member? patch-here [neighbors4] of goal)[
+    if(indexStop >= (length stops - 1))
+     [die]
   ]
 end
 
 ;; establish goal of driver and move to next patch along the way
 to-report next-patch
 
-  let goalx 0
-  let goaly 0
-  let feupx 0
-  let feupy 0
-
-    ;;if i am on my goal then i update my goal to the next stop
-    if (member? patch-here [neighbors4] of goal)
+    if (member? patch-here [neighbors4] of goal)[
+    ifelse(indexStop < (length stops - 1))
     [
-     ifelse(indexStop < (length stops - 1))
-      [
-        set indexStop (indexStop + 1)
-        set goal (item indexStop stops)
-      ]
+      print indexStop
+      set indexStop (indexStop + 1)
+      set goal (item indexStop stops)
+    ]
     [
-      set feupx [pxcor] of feup
-      set feupy [pycor] of feup
-      set goalx [pxcor] of goal
-      set goaly [pycor] of goal
-
-      if(goalx = feupx and goaly = feupy) [
-        report feup
-      ]
-
+      ;;come back to the first stop
+      set indexStop 0
+      set goal first stops
     ]
-    ]
-
+  ]
 
   ;; CHOICES is an agentset of the candidate patches that the car can
   ;; move to (white patches are roads, green and red patches are lights)
   let choices neighbors with [ pcolor = white or pcolor = red or pcolor = green ]
   ;; choose the patch closest to the goal, this is the patch the car will move to
-
   let choice min-one-of choices [ distance [ goal ] of myself ]
-
   ;; report the chosen patch
   report choice
 
@@ -758,8 +823,8 @@ SLIDER
 num-cars
 num-cars
 1
-400
-27.0
+20
+10.0
 1
 1
 NIL
@@ -1043,7 +1108,7 @@ INPUTBOX
 905
 140
 cluster-5
-20.0
+3.0
 1
 0
 Number
