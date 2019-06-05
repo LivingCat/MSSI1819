@@ -14,6 +14,7 @@ globals
   feup
 
   cluster-size-list ;; list containing the number of elems for each cluster
+  total-co-emissions
 
 ]
 
@@ -31,6 +32,8 @@ turtles-own
   stops     ;; all the stops the turtle has to make (house,friend1,friend2,....,work)
   indexStop ;; index of current goal
   isReversing ;;after reaching the final destination, the turtles have to go back through all the stops
+
+  co-emissions-car
 ]
 
 patches-own
@@ -381,10 +384,26 @@ to go
     fd speed
     record-data     ;; record data for plotting
     set-car-color   ;; set color to indicate speed
+    calculate-emissons
   ]
   label-subject ;; if we're watching a car, have it display its goal
   next-phase ;; update the phase and the global clock
+
+  set total-co-emissions total-co-emissions + (sum [co-emissions-car] of turtles)
+
+
   tick
+
+end
+
+to calculate-emissons
+  let a 71.7
+  let b 35.4
+  let c 11.3
+  let d -0.248
+  let e0 0
+
+  set co-emissions-car (a + c * speed + e0 * (speed ^ 2))/ (1 + b * speed + d * (speed ^ 2))
 
 end
 
@@ -740,7 +759,7 @@ num-cars
 num-cars
 1
 400
-8.0
+27.0
 1
 1
 NIL
@@ -1024,7 +1043,7 @@ INPUTBOX
 905
 140
 cluster-5
-1.0
+20.0
 1
 0
 Number
@@ -1050,6 +1069,24 @@ cluster-7
 1
 0
 Number
+
+PLOT
+5
+580
+205
+730
+Total CO Emissions
+Time
+Emission rate
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot total-co-emissions"
 
 @#$#@#$#@
 ## ACKNOWLEDGMENT
