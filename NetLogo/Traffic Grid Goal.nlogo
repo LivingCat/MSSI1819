@@ -37,6 +37,7 @@ turtles-own
   rider ;;true if has car
   matches ;;passengers the turtle needs to pick up
 
+
 ]
 
 patches-own
@@ -99,6 +100,7 @@ to setup
     set capacity 3
     set rider false
     set stops []
+    set matches []
 
     setup-cars
     set-car-color ;; slower turtles are blue, faster ones are colored cyan
@@ -141,7 +143,14 @@ to setup
 
   ;; give the turtles an initial speed
   ask turtles [ set-car-speed ]
-  random-matching
+  ifelse(matching-algorythm = "Random")
+  [
+    random-matching
+  ]
+  [
+    distance-matching
+  ]
+
   set-stops
   reset-ticks
 end
@@ -254,18 +263,9 @@ end
 to set-stops
   ask turtles with [rider = true] [
 
-    ;foreach matches [
-     ; [match] ->
-      ;set stops lput [patch-here] of match stops
-      ;ask match [die]
-    ;]
-    print "matches"
-    show matches
     ask matches [
       ifelse(member? patch-here intersections)
       [
-      print "eu sou uma match e tou em"
-      show patch-here
       let match-patch patch-here
       let neigh [neighbors] of match-patch
       let not-roads neigh with [not member? self roads]
@@ -273,8 +273,6 @@ to set-stops
       ask myself[ set stops lput neighbor stops]
       ]
       [
-            print "eu sou uma match e tou em"
-      show patch-here
       let match-patch patch-here
       let neigh [neighbors4] of match-patch
       let not-roads neigh with [not member? self roads]
@@ -286,7 +284,6 @@ to set-stops
     ]
 
    set stops lput feup stops
-    show stops
 
     let i 26
     foreach stops[
@@ -321,6 +318,45 @@ to random-matching
   ]
 end
 
+to distance-matching
+  let list-distances []
+  ask turtles [
+    ask turtles with [self != myself] [
+      let triple (list myself self distance myself)
+      set list-distances lput triple list-distances
+    ]
+  ]
+  ;sort using distances
+  set list-distances sort-by [ [triple1 triple2] -> item 2 triple1 < item 2 triple2 ] list-distances
+  print list-distances
+
+
+  foreach list-distances [
+    [i]-> if not [been-matched] of item 1 i and not [rider] of item 1 i and [capacity] of item 0 i > 0
+    [
+     ask item 0 i [
+      set matches lput item 1 i matches
+      set capacity capacity - 1
+      set rider true
+    ]
+
+      ask item 1 i [
+        set been-matched true
+      ]
+    ]
+  ]
+
+  ask turtles [
+    set matches turtles with [member? self matches]
+  ]
+
+end
+
+to-report min-positions [my-list]
+  let min-value min my-list
+  let indices n-values (length my-list) [i -> i]
+  report filter [i -> item i my-list = min-value] indices
+end
 
 to-report calculate-intersections [xfeup yfeup distancia]
   let result (list)
@@ -638,7 +674,6 @@ to-report next-patch
     if (member? patch-here [neighbors4] of goal)[
     ifelse(indexStop < (length stops - 1))
     [
-      print indexStop
       set indexStop (indexStop + 1)
       set goal (item indexStop stops)
     ]
@@ -824,7 +859,7 @@ num-cars
 num-cars
 1
 20
-10.0
+20.0
 1
 1
 NIL
@@ -1053,7 +1088,7 @@ INPUTBOX
 755
 70
 cluster-0
-1.0
+0.0
 1
 0
 Number
@@ -1064,7 +1099,7 @@ INPUTBOX
 830
 70
 cluster-1
-1.0
+5.0
 1
 0
 Number
@@ -1075,7 +1110,7 @@ INPUTBOX
 905
 70
 cluster-2
-1.0
+0.0
 1
 0
 Number
@@ -1086,7 +1121,7 @@ INPUTBOX
 755
 140
 cluster-3
-1.0
+0.0
 1
 0
 Number
@@ -1097,7 +1132,7 @@ INPUTBOX
 830
 140
 cluster-4
-1.0
+0.0
 1
 0
 Number
@@ -1108,7 +1143,7 @@ INPUTBOX
 905
 140
 cluster-5
-3.0
+15.0
 1
 0
 Number
@@ -1119,7 +1154,7 @@ INPUTBOX
 755
 210
 cluster-6
-1.0
+0.0
 1
 0
 Number
@@ -1130,16 +1165,16 @@ INPUTBOX
 830
 210
 cluster-7
-1.0
+0.0
 1
 0
 Number
 
 PLOT
-5
-580
-205
-730
+705
+385
+905
+535
 Total CO Emissions
 Time
 Emission rate
@@ -1152,6 +1187,16 @@ false
 "" ""
 PENS
 "default" 1.0 0 -16777216 true "" "plot total-co-emissions"
+
+CHOOSER
+985
+35
+1123
+80
+matching-algorythm
+matching-algorythm
+"Random" "Min Distance"
+1
 
 @#$#@#$#@
 ## ACKNOWLEDGMENT
