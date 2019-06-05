@@ -12,6 +12,9 @@ globals
   intersections ;; agentset containing the patches that are intersections
   roads         ;; agentset containing the patches that are roads
   feup
+
+  cluster-size-list ;; list containing the number of elems for each cluster
+
 ]
 
 
@@ -67,6 +70,9 @@ to setup
 
   set-default-shape turtles "car"
   ;set-default-shape passengers "person"
+
+  set num-cars sum cluster-size-list
+
   if (num-cars > count roads) [
     user-message (word
       "There are too many cars for the amount of "
@@ -137,6 +143,7 @@ to setup-globals
   set num-cars-stopped 0
   set grid-x-inc world-width / grid-size-x
   set grid-y-inc world-height / grid-size-y
+  set cluster-size-list (list cluster-0 cluster-1 cluster-2 cluster-3 cluster-4 cluster-5 cluster-6 cluster-7)
 
   ;; don't make acceleration 0.1 since we could get a rounding error and end up on a patch boundary
   set acceleration 0.099
@@ -217,10 +224,11 @@ to setup-cars  ;; turtle procedure
 
 
   let possible-locations-set no-patches
+  let cluster get-cluster
 
   while [count (possible-locations-set with [ not any? turtles-on self ]) = 0]
   [
-    let distance-to-feup get-distance-to-feup
+    let distance-to-feup get-distance-to-feup cluster
     let possible-locations calculate-intersections ([pxcor] of feup) ([pycor] of feup) distance-to-feup
     set possible-locations-set no-patches
     foreach possible-locations [x -> set possible-locations-set (patch-set possible-locations-set x)
@@ -301,10 +309,18 @@ to put-on-empty-road  ;; turtle procedure
   move-to one-of roads with [ not any? turtles-on self ]
 end
 
+to-report get-cluster
+  let cluster 0
+  while [(item cluster cluster-size-list) = 0]
+    [set cluster (cluster + 1)]
 
+  set cluster-size-list replace-item cluster cluster-size-list ((item cluster cluster-size-list) - 1)
 
-to-report get-distance-to-feup
-  let cluster random 8
+  report cluster
+
+end
+to-report get-distance-to-feup [cluster]
+
 
   ;; gamma-values has alpha lambda 1-percentile 99-percentile
   let gamma-values [
@@ -724,7 +740,7 @@ num-cars
 num-cars
 1
 400
-99.0
+8.0
 1
 1
 NIL
@@ -918,10 +934,10 @@ NIL
 0
 
 SLIDER
-805
-60
-977
-93
+690
+280
+862
+313
 numFriendsMax
 numFriendsMax
 0
@@ -933,10 +949,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-795
-125
-967
-158
+690
+230
+862
+263
 num-passengers
 num-passengers
 0
@@ -948,23 +964,89 @@ NIL
 HORIZONTAL
 
 INPUTBOX
-920
-350
-1072
-410
+690
+10
+755
+70
 cluster-0
-5.0
+1.0
 1
 0
 Number
 
 INPUTBOX
-975
-245
-1127
-305
+765
+10
+830
+70
 cluster-1
-45.0
+1.0
+1
+0
+Number
+
+INPUTBOX
+840
+10
+905
+70
+cluster-2
+1.0
+1
+0
+Number
+
+INPUTBOX
+690
+80
+755
+140
+cluster-3
+1.0
+1
+0
+Number
+
+INPUTBOX
+765
+80
+830
+140
+cluster-4
+1.0
+1
+0
+Number
+
+INPUTBOX
+840
+80
+905
+140
+cluster-5
+1.0
+1
+0
+Number
+
+INPUTBOX
+690
+150
+755
+210
+cluster-6
+1.0
+1
+0
+Number
+
+INPUTBOX
+765
+150
+830
+210
+cluster-7
+1.0
 1
 0
 Number
