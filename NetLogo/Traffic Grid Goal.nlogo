@@ -261,8 +261,8 @@ to setup-cars  ;; turtle procedure
 end
 
 to set-stops
-  ask turtles with [rider = true] [
 
+  ask turtles with [rider = true] [
     ask matches [
       ifelse(member? patch-here intersections)
       [
@@ -293,7 +293,6 @@ to set-stops
       ]
     ]
 
-    ;;set first goal "house"
     set goal first stops
     ;;set first index current stop
     set indexStop 0
@@ -328,18 +327,15 @@ to distance-matching
   ]
   ;sort using distances
   set list-distances sort-by [ [triple1 triple2] -> item 2 triple1 < item 2 triple2 ] list-distances
-  print list-distances
-
 
   foreach list-distances [
-    [i]-> if not [been-matched] of item 1 i and not [rider] of item 1 i and [capacity] of item 0 i > 0
+    [i]-> if not [been-matched] of item 1 i and not [rider] of item 1 i and not [been-matched] of item 0 i and [capacity] of item 0 i > 0
     [
      ask item 0 i [
       set matches lput item 1 i matches
       set capacity capacity - 1
       set rider true
     ]
-
       ask item 1 i [
         set been-matched true
       ]
@@ -347,7 +343,7 @@ to distance-matching
   ]
 
   ask turtles [
-    set matches turtles with [member? self matches]
+    set matches turtles with [member? self [matches] of myself]
   ]
 
 end
@@ -859,7 +855,7 @@ num-cars
 num-cars
 1
 20
-20.0
+6.0
 1
 1
 NIL
@@ -1099,7 +1095,7 @@ INPUTBOX
 830
 70
 cluster-1
-5.0
+0.0
 1
 0
 Number
@@ -1143,7 +1139,7 @@ INPUTBOX
 905
 140
 cluster-5
-15.0
+6.0
 1
 0
 Number
