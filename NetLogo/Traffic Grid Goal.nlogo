@@ -16,6 +16,8 @@ globals
   cluster-size-list ;; list containing the number of elems for each cluster
   total-co-emissions
 
+  useful-intersections
+
 ]
 
 
@@ -187,11 +189,18 @@ to setup-patches
   ;; initialize the global variables that hold patch agentsets
   set roads patches with [
     (floor ((pxcor + max-pxcor - floor (grid-x-inc - 1)) mod grid-x-inc) = 0) or
-    (floor ((pycor + max-pycor) mod grid-y-inc) = 0)
+    (floor ((pycor + max-pycor) mod grid-y-inc) = 0) or (pycor = max-pycor) or (pxcor = min-pxcor)
   ]
   set intersections roads with [
-    (floor ((pxcor + max-pxcor - floor (grid-x-inc - 1)) mod grid-x-inc) = 0) and
-    (floor ((pycor + max-pycor) mod grid-y-inc) = 0)
+    ((floor ((pxcor + max-pxcor - floor (grid-x-inc - 1)) mod grid-x-inc) = 0) and
+    (floor ((pycor + max-pycor) mod grid-y-inc) = 0))
+  ]
+
+  set useful-intersections roads with  [
+    ((floor ((pxcor + max-pxcor - floor (grid-x-inc - 1)) mod grid-x-inc) = 0) and
+    (floor ((pycor + max-pycor) mod grid-y-inc) = 0)) or
+    ((floor ((pxcor + max-pxcor - floor (grid-x-inc - 1)) mod grid-x-inc) = 0) and (pycor = max-pycor)) or
+    ((floor ((pycor + max-pycor) mod grid-y-inc) = 0) and (pxcor = min-pxcor))
   ]
 
   ask roads [ set pcolor white ]
@@ -211,14 +220,18 @@ end
 ;; patch variables.  Make all the traffic lights start off so that the lights are red
 ;; horizontally and green vertically.
 to setup-intersections
-  ask intersections [
+  ask intersections[
     set intersection? true
     set green-light-up? true
     set my-phase 0
     set auto? true
     set my-row floor ((pycor + max-pycor) / grid-y-inc)
     set my-column floor ((pxcor + max-pxcor) / grid-x-inc)
-    set-signal-colors
+
+    if pxcor != min-pxcor and pycor != max-pycor[
+     set-signal-colors
+    ]
+
   ]
 end
 
@@ -258,7 +271,7 @@ to set-stops
 
   ask turtles with [rider = true] [
     ask matches [
-      ifelse(member? patch-here intersections)
+      ifelse(member? patch-here useful-intersections)
       [
       let match-patch patch-here
       let neigh [neighbors] of match-patch
@@ -278,7 +291,7 @@ to set-stops
     ]
 
    set stops lput feup stops
-
+    ;sort-by [[item 0 stop]]
     let i 26
     foreach stops[
       [the-stop] -> ask the-stop[
@@ -290,7 +303,7 @@ to set-stops
     set goal first stops
     ;;set first index current stop
     set indexStop 0
-    show stops
+    ;show stops
   ]
 
 
@@ -585,7 +598,7 @@ to record-data  ;; turtle procedure
 end
 
 to change-light-at-current-intersection
-  ask current-intersection [
+  ask current-intersection[
     set green-light-up? (not green-light-up?)
     set-signal-colors
   ]
@@ -798,7 +811,7 @@ num-cars
 num-cars
 1
 20
-4.0
+600.0
 1
 1
 NIL
@@ -1082,7 +1095,7 @@ INPUTBOX
 1220
 160
 cluster-5
-4.0
+600.0
 1
 0
 Number
