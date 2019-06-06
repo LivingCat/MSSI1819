@@ -290,8 +290,10 @@ to set-stops
       die
     ]
 
-   set stops lput feup stops
-    ;sort-by [[item 0 stop]]
+    set stops sort-by [[stop1 stop2] -> [distance feup] of stop1 > [distance feup] of stop2] stops
+
+    set stops lput feup stops
+
     let i 26
     foreach stops[
       [the-stop] -> ask the-stop[
