@@ -38,6 +38,7 @@ turtles-own
   been-matched ;;true if turtle was already matched in the macthing phase, false otherwise
   rider ;;true if has car
   matches ;;passengers the turtle needs to pick up
+  cluster
 
 
 ]
@@ -99,7 +100,6 @@ to setup
   create-turtles num-cars [
 
     set been-matched false
-    set capacity 3
     set rider false
     set stops []
     set matches []
@@ -255,11 +255,11 @@ to setup-cars  ;; turtle procedure
     [ set heading 90 ]
 
   let possible-locations no-patches
-  let cluster get-cluster
-
+  set-cluster
+  set-capacity
   while [count (possible-locations) = 0]
   [
-    let distance-to-feup get-distance-to-feup cluster
+    let distance-to-feup get-distance-to-feup
     set possible-locations calculate-intersections distance-to-feup
   ]
 
@@ -380,17 +380,87 @@ to put-on-empty-road  ;; turtle procedure
   move-to one-of roads with [ not any? turtles-on self ]
 end
 
-to-report get-cluster
-  let cluster 0
+to set-capacity
+
+  let cap-probs [
+    [
+      [1	0.166666666666667]
+      [3	0.833333333333333]
+      [4	1 ]
+    ]
+    [
+      [1	0.12962962962963]
+      [2	0.166666666666667]
+      [3	0.203703703703704]
+      [4	0.981481481481482]
+      [5	1]
+    ]
+    [
+      [1	0.6]
+      [4	1]
+
+    ]
+    [
+      [0	0.022727272727273]
+      [1	0.159090909090909]
+      [3	0.227272727272727]
+      [4	0.954545454545455]
+      [5	0.977272727272727]
+      [6	1]
+    ]
+    [
+      [0	0.055555555555556]
+      [1	0.277777777777778]
+      [2	0.388888888888889]
+      [3	0.5]
+      [4	0.944444444444444]
+      [5	1]
+    ]
+    [
+      [1	0.09375]
+      [2	0.104166666666667]
+      [3	0.1875]
+      [4	1]
+    ]
+    [
+      [0	0.0625]
+      [1	0.3125]
+      [4	1]
+    ]
+    [
+      [1	0.25]
+      [3	0.5]
+      [4	1]
+    ]
+  ]
+
+  let selected-cluster-probs item cluster cap-probs
+
+  let random-num random-float 1
+  let i 0
+  let line-cluster (item i selected-cluster-probs)
+  let prob-capacity (item 1 line-cluster)
+
+  while [random-num > prob-capacity]
+  [
+    set i (i + 1)
+    set line-cluster (item i selected-cluster-probs)
+    set prob-capacity (item 1 line-cluster)
+  ]
+
+  set capacity (item 0 line-cluster)
+
+end
+
+to set-cluster
+  set cluster 0
   while [(item cluster cluster-size-list) = 0]
     [set cluster (cluster + 1)]
 
   set cluster-size-list replace-item cluster cluster-size-list ((item cluster cluster-size-list) - 1)
 
-  report cluster
-
 end
-to-report get-distance-to-feup [cluster]
+to-report get-distance-to-feup
 
 
   ;; gamma-values has alpha lambda 1-percentile 99-percentile
@@ -1583,7 +1653,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
