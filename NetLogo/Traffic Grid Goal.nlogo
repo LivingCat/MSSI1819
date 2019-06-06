@@ -241,22 +241,16 @@ to setup-cars  ;; turtle procedure
     [ set heading 180 ]
     [ set heading 90 ]
 
-
-
-
-  let possible-locations-set no-patches
+  let possible-locations no-patches
   let cluster get-cluster
 
-  while [count (possible-locations-set with [ not any? turtles-on self ]) = 0]
+  while [count (possible-locations) = 0]
   [
     let distance-to-feup get-distance-to-feup cluster
-    let possible-locations calculate-intersections ([pxcor] of feup) ([pycor] of feup) distance-to-feup
-    set possible-locations-set no-patches
-    foreach possible-locations [x -> set possible-locations-set (patch-set possible-locations-set x)]
-
+    set possible-locations calculate-intersections distance-to-feup
   ]
 
-   move-to one-of possible-locations-set  with [ not any? turtles-on self ]
+  move-to one-of possible-locations
 
 end
 
@@ -296,8 +290,9 @@ to set-stops
     set goal first stops
     ;;set first index current stop
     set indexStop 0
-
+    show stops
   ]
+
 
 end
 
@@ -354,69 +349,16 @@ to-report min-positions [my-list]
   report filter [i -> item i my-list = min-value] indices
 end
 
-to-report calculate-intersections [xfeup yfeup distancia]
-  let result (list)
-  let left-roads patches with [
-    ((floor ((pxcor + max-pxcor - floor (grid-x-inc - 1)) mod grid-x-inc) = 0) or
-    (floor ((pycor + max-pycor) mod grid-y-inc) = 0)) and pxcor = min-pxcor
-  ]
+to-report calculate-intersections [distancia]
 
-  ask left-roads [
-    let intersect calculate-intersections-y [pxcor] of feup [pycor] of feup distancia [pycor] of self
-    if(length intersect > 0)
-    [set result lput patch item 0 intersect pycor result]
-  ]
-
-  let top-roads patches with [
-    ((floor ((pxcor + max-pxcor - floor (grid-x-inc - 1)) mod grid-x-inc) = 0) or
-    (floor ((pycor + max-pycor) mod grid-y-inc) = 0)) and pycor = max-pycor
-  ]
-
-   ask top-roads [
-    let intersect calculate-intersections-x [pxcor] of feup [pycor] of feup distancia [pxcor] of self
-    if(length intersect > 0)
-    [set result lput patch pxcor item 0 intersect result]
-  ]
-
-  ;set result filter [not member? self intersections] result
-  ;foreach result [x -> ask x [set pcolor black]]
-  report result
-end
-
-
-to-report calculate-intersections-y [xfeup yfeup distancia yestrada]
-  let result (list)
-  if((-2 * xfeup) ^ 2 - 4 * (xfeup ^ 2 - (distancia ^ 2 - (yestrada - yfeup) ^ 2))) < 0
-  [report result]
-  let x1 (2 * xfeup - sqrt((-2 * xfeup) ^ 2 - 4 * (xfeup ^ 2 - (distancia ^ 2 - (yestrada - yfeup) ^ 2)))) / 2
-  if(x1 > min-pxcor and x1 < max-pxcor)
-  [
-    set result lput x1 result
-  ]
-  let x2 (2 * xfeup + sqrt((-2 * xfeup) ^ 2 - 4 * (xfeup ^ 2 - (distancia ^ 2 - (yestrada - yfeup) ^ 2)))) / 2
-   if(x2 > min-pxcor and x2 < max-pxcor)
-  [
-    set result lput x2 result
+  let result roads  with [
+    (sqrt (((pxcor - [pxcor] of feup) ^ 2) + ((pycor - [pycor] of feup) ^ 2))) <  (distancia + 0.5) and
+    (sqrt (((pxcor - [pxcor] of feup) ^ 2) + ((pycor - [pycor] of feup) ^ 2))) >  (distancia - 0.5)
   ]
   report result
+
 end
 
-to-report calculate-intersections-x [xfeup yfeup distancia xestrada]
-  let result (list)
-  if((-2 * xfeup) ^ 2 - 4 * (xfeup ^ 2 - (distancia ^ 2 - (xestrada - yfeup) ^ 2))) < 0
-  [report result]
-  let x1 (2 * xfeup - sqrt((-2 * xfeup) ^ 2 - 4 * (xfeup ^ 2 - (distancia ^ 2 - (xestrada - yfeup) ^ 2)))) / 2
-  if(x1 > min-pycor and x1 < max-pycor)
-  [
-    set result lput x1 result
-  ]
-  let x2 (2 * xfeup + sqrt((-2 * xfeup) ^ 2 - 4 * (xfeup ^ 2 - (distancia ^ 2 - (xestrada - yfeup) ^ 2)))) / 2
-   if(x2 > min-pycor and x2 < max-pycor)
-  [
-    set result lput x2 result
-  ]
-  report result
-end
 
 ;; Find a road patch without any turtles on it and place the turtle there.
 to put-on-empty-road  ;; turtle procedure
@@ -658,6 +600,7 @@ end
 
 to remove-turtles-at-goal
   ;;if i am on my goal then i update my go
+
     if (member? patch-here [neighbors4] of goal)[
     if(indexStop >= (length stops - 1))
      [die]
@@ -743,10 +686,10 @@ end
 ; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
-327
+340
 10
-668
-352
+897
+568
 -1
 -1
 9.0
@@ -759,10 +702,10 @@ GRAPHICS-WINDOW
 0
 0
 1
--18
-18
--18
-18
+-30
+30
+-30
+30
 1
 1
 1
@@ -770,10 +713,10 @@ ticks
 30.0
 
 PLOT
-453
-377
-671
-552
+430
+580
+648
+755
 Average Wait Time of Cars
 Time
 Average Wait
@@ -788,10 +731,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot mean [wait-time] of turtles"
 
 PLOT
-228
-377
-444
-552
+205
+580
+421
+755
 Average Speed of Cars
 Time
 Average Speed
@@ -814,7 +757,7 @@ grid-size-y
 grid-size-y
 1
 9
-5.0
+9.0
 1
 1
 NIL
@@ -829,7 +772,7 @@ grid-size-x
 grid-size-x
 1
 9
-5.0
+9.0
 1
 1
 NIL
@@ -855,17 +798,17 @@ num-cars
 num-cars
 1
 20
-6.0
+4.0
 1
 1
 NIL
 HORIZONTAL
 
 PLOT
-5
-376
-219
-551
+-18
+579
+196
+754
 Stopped Cars
 Time
 Stopped Cars
@@ -1049,10 +992,10 @@ NIL
 0
 
 SLIDER
-690
-280
-862
-313
+1315
+225
+1487
+258
 numFriendsMax
 numFriendsMax
 0
@@ -1064,10 +1007,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-690
-230
-862
-263
+1315
+175
+1487
+208
 num-passengers
 num-passengers
 0
@@ -1079,10 +1022,10 @@ NIL
 HORIZONTAL
 
 INPUTBOX
-690
-10
-755
-70
+1005
+30
+1070
+90
 cluster-0
 0.0
 1
@@ -1090,10 +1033,10 @@ cluster-0
 Number
 
 INPUTBOX
-765
-10
-830
-70
+1080
+30
+1145
+90
 cluster-1
 0.0
 1
@@ -1101,10 +1044,10 @@ cluster-1
 Number
 
 INPUTBOX
-840
-10
-905
-70
+1155
+30
+1220
+90
 cluster-2
 0.0
 1
@@ -1112,10 +1055,10 @@ cluster-2
 Number
 
 INPUTBOX
-690
-80
-755
-140
+1005
+100
+1070
+160
 cluster-3
 0.0
 1
@@ -1123,10 +1066,10 @@ cluster-3
 Number
 
 INPUTBOX
-765
-80
-830
-140
+1080
+100
+1145
+160
 cluster-4
 0.0
 1
@@ -1134,21 +1077,21 @@ cluster-4
 Number
 
 INPUTBOX
-840
-80
-905
-140
+1155
+100
+1220
+160
 cluster-5
-6.0
+4.0
 1
 0
 Number
 
 INPUTBOX
-690
-150
-755
-210
+1005
+170
+1070
+230
 cluster-6
 0.0
 1
@@ -1156,10 +1099,10 @@ cluster-6
 Number
 
 INPUTBOX
-765
-150
-830
-210
+1080
+170
+1145
+230
 cluster-7
 0.0
 1
@@ -1167,10 +1110,10 @@ cluster-7
 Number
 
 PLOT
-705
-385
-905
-535
+682
+588
+882
+738
 Total CO Emissions
 Time
 Emission rate
@@ -1185,10 +1128,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot total-co-emissions"
 
 CHOOSER
-985
-35
-1123
-80
+1365
+40
+1503
+85
 matching-algorythm
 matching-algorythm
 "Random" "Min Distance"
