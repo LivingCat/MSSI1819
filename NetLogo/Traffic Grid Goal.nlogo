@@ -40,6 +40,10 @@ turtles-own
   matches ;;passengers the turtle needs to pick up
 
 
+  year ;; university year the student frequents
+  course ;;course the student frequents
+  friends ;;other users which are friends with the user
+
 ]
 
 patches-own
