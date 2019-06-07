@@ -44,6 +44,7 @@ turtles-own
   year ;; university year the student frequents
   course ;;course the student frequents
   friends ;;other users which are friends with the user
+  num-friends
 
 ]
 
@@ -107,6 +108,7 @@ to setup
     set rider false
     set stops []
     set matches []
+    set friends no-turtles
 
     setup-cars
     set-car-color ;; slower turtles are blue, faster ones are colored cyan
@@ -149,6 +151,14 @@ to setup
 
   ;; give the turtles an initial speed
   ask turtles [ set-car-speed ]
+  set-personal-vars
+  ask turtles [
+    print "these are my friends"
+    print self
+    ask friends [
+      print self
+    ]
+  ]
   ifelse(matching-algorythm = "Random")
   [
     random-matching
@@ -268,6 +278,38 @@ to setup-cars  ;; turtle procedure
   ]
 
   move-to one-of possible-locations
+
+end
+
+to set-personal-vars
+  ask turtles [
+    set year (random 5) + 1
+    set course (random 7) + 1
+    set num-friends round random-normal 4 1
+  ]
+
+  ask turtles [
+    ;print "eu sou"
+    ;print self
+    let num min (list num-friends count turtles with [self != myself and num-friends > 0 and not member? self [friends] of myself])
+    set friends (turtle-set friends n-of num turtles with [self != myself and num-friends > 0 and not member? self [friends] of myself])
+
+    ;print "estes sao os meus friends"
+    ask friends [
+      ;print "eu sou um friend"
+      ;print self
+      ;print "friends iniciais do friend"
+      ;print friends
+      set friends (turtle-set friends myself)
+      ;print "e os meus friends finais do friend sao"
+      ;ask friends [
+        ;print self
+      ;]
+      set num-friends num-friends - 1
+    ]
+
+    set num-friends num-friends - num
+  ]
 
 end
 
@@ -887,7 +929,7 @@ num-cars
 num-cars
 1
 20
-600.0
+2.0
 1
 1
 NIL
@@ -1171,7 +1213,7 @@ INPUTBOX
 1220
 160
 cluster-5
-600.0
+2.0
 1
 0
 Number
