@@ -411,34 +411,29 @@ to best-matching
        set possible lput self possible
       ]
       let possible-groups []
-      foreach (range 1 capacity)
+      let range-capacity []
+      ifelse capacity = 1[
+        set range-capacity (list 1)
+      ][
+        set range-capacity (range 1 (capacity + 1))
+      ]
+      foreach range-capacity
       [ [i] ->
         let perms []
-        ifelse i = 0 [
-          set perms comb-1 possible
-        ]
-        [
-          set perms comb i possible
-        ]
+
+        set perms comb i possible
 
         foreach perms[
           [perm] -> set possible-groups lput perm possible-groups
         ]
       ]
+      ;show "result"
       show capacity
       show possible-groups
     ]
   ]
   print "done"
 
-end
-
-to-report comb-1 [_s]
-  let result []
-  foreach _s [
-    [i] -> set result lput (list i) result
-  ]
-  report result
 end
 
 to-report comb [_m _s]
@@ -1098,7 +1093,7 @@ num-cars
 num-cars
 1
 20
-20.0
+6.0
 1
 1
 NIL
@@ -1292,10 +1287,10 @@ NIL
 0
 
 SLIDER
-1315
-225
-1487
-258
+965
+445
+1137
+478
 numFriendsMax
 numFriendsMax
 0
@@ -1307,10 +1302,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-1315
-175
-1487
-208
+965
+395
+1137
+428
 num-passengers
 num-passengers
 0
@@ -1382,7 +1377,7 @@ INPUTBOX
 1220
 160
 cluster-5
-20.0
+6.0
 1
 0
 Number
@@ -1428,10 +1423,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot total-co-emissions"
 
 CHOOSER
-1365
-40
-1503
-85
+1015
+260
+1153
+305
 matching-algorythm
 matching-algorythm
 "Random" "Min Distance" "Best!"
