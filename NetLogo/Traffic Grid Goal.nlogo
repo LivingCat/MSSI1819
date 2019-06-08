@@ -152,20 +152,16 @@ to setup
   ;; give the turtles an initial speed
   ask turtles [ set-car-speed ]
   set-personal-vars
-  ask turtles [
-    print "these are my friends"
-    print self
-    ask friends [
-      print self
-    ]
-  ]
   ifelse(matching-algorythm = "Random")
   [
     random-matching
   ]
-  [
+  [ifelse(matching-algorythm = "Min Distance")[
     distance-matching
   ]
+  [
+     best-matching
+  ]]
 
   set-stops
   reset-ticks
@@ -296,15 +292,7 @@ to set-personal-vars
 
     ;print "estes sao os meus friends"
     ask friends [
-      ;print "eu sou um friend"
-      ;print self
-      ;print "friends iniciais do friend"
-      ;print friends
       set friends (turtle-set friends myself)
-      ;print "e os meus friends finais do friend sao"
-      ;ask friends [
-        ;print self
-      ;]
       set num-friends num-friends - 1
     ]
 
@@ -403,6 +391,55 @@ to distance-matching
   ]
 
 end
+
+to best-matching
+  ask turtles[
+    if not been-matched[
+      let possible-set turtles with [distance myself < 30 and self != myself]
+      let possible []
+      ask possible-set[
+       set possible lput self possible
+      ]
+      let possible-groups []
+      foreach (range 1 capacity)
+      [ [i] ->
+        let perms []
+        ifelse i = 0 [
+          set perms comb-1 possible
+        ]
+        [
+          set perms comb i possible
+        ]
+
+        foreach perms[
+          [perm] -> set possible-groups lput perm possible-groups
+        ]
+      ]
+      show capacity
+      show possible-groups
+    ]
+  ]
+  print "done"
+
+end
+
+to-report comb-1 [_s]
+  let result []
+  foreach _s [
+    [i] -> set result lput (list i) result
+  ]
+  report result
+end
+
+to-report comb [_m _s]
+  if (_m = 0) [ report [[]] ]
+  if (_s = []) [ report [] ]
+  let _rest butfirst _s
+  let _lista map [? -> fput item 0 _s ?] comb (_m - 1) _rest
+  let _listb comb _m _rest
+  report (sentence _lista _listb)
+end
+
 
 to-report min-positions [my-list]
   let min-value min my-list
@@ -929,7 +966,7 @@ num-cars
 num-cars
 1
 20
-2.0
+6.0
 1
 1
 NIL
@@ -1213,7 +1250,7 @@ INPUTBOX
 1220
 160
 cluster-5
-2.0
+6.0
 1
 0
 Number
@@ -1265,8 +1302,8 @@ CHOOSER
 85
 matching-algorythm
 matching-algorythm
-"Random" "Min Distance"
-1
+"Random" "Min Distance" "Best!"
+2
 
 @#$#@#$#@
 ## ACKNOWLEDGMENT
