@@ -404,6 +404,12 @@ end
 
 to best-matching
   ask turtles[
+    show self
+    type will-friends type " <friends " type will-year-colleagues type "<year " type will-degree-colleagues type "<degree " type will-feup-colleagues print "<feup"
+    type "year" type year type "course" print course
+    ask friends[print self]
+    show self
+
     if not been-matched[
       let possible-set turtles with [distance myself < 30 and self != myself]
       let possible []
@@ -427,13 +433,55 @@ to best-matching
           [perm] -> set possible-groups lput perm possible-groups
         ]
       ]
-      ;show "result"
-      show capacity
+      let scored-groups score-groups possible-groups self
       show possible-groups
+      show scored-groups
     ]
   ]
   print "done"
 
+end
+
+to-report score-groups [possible-groups rider-turtle]
+  let result-scores []
+  foreach possible-groups[
+    [i] ->
+    set result-scores lput score-group i rider-turtle result-scores
+  ]
+  report result-scores
+end
+
+to-report score-group [group rider-turtle]
+  let social-result social-score group rider-turtle
+  let full-car-result full-car-score group rider-turtle
+  report social-result * full-car-result
+end
+
+
+  ;year                     ;; university year the student frequents
+  ;course                   ;;course the student frequents
+  ;friends                  ;;other users which are friends with the user
+  ;num-friends
+
+  ;will-friends             ;;willingness to share rides with friends [1, 5]
+  ;will-year-colleagues     ;;willingness to share rides with colleagues of the same year [1, 5]
+  ;will-degree-colleagues   ;;willingness to share rides with colleagues of the same degree [1, 5]
+  ;will-feup-colleagues     ;;willingness to share rides with colleagues from feup [1, 5]
+to-report social-score [group rider-turtle]
+  let result 1
+  foreach group[
+    [elem]->
+    ifelse member? elem [friends] of rider-turtle [ set result result *  [will-friends] of rider-turtle]
+    [ ifelse [year] of elem = [year] of rider-turtle and [course] of elem = [course] of rider-turtle [ set result result *  [will-year-colleagues] of rider-turtle]
+      [ ifelse [course] of elem = [course] of rider-turtle [ set result result *  [will-degree-colleagues] of rider-turtle]
+        [  set result result *  [will-feup-colleagues] of rider-turtle
+    ]]]
+  ]
+  report result
+end
+
+to-report full-car-score [group rider-turtle]
+  report length group / [capacity] of rider-turtle
 end
 
 to-report comb [_m _s]
@@ -492,7 +540,7 @@ to set-will-friends
     set prob-will-friends (item i selected-cluster-probs)
   ]
 
-  set will-friends (i + 1)
+  set will-friends i / 4
 
 end
 
@@ -519,7 +567,7 @@ to set-will-year-colleagues
     set prob-will-year-colleagues (item i selected-cluster-probs)
   ]
 
-  set will-year-colleagues (i + 1)
+  set will-year-colleagues i / 4
 
 end
 
@@ -548,7 +596,7 @@ to set-will-degree-colleagues
     set prob-will-degree-colleagues (item i selected-cluster-probs)
   ]
 
-  set will-degree-colleagues (i + 1)
+  set will-degree-colleagues i / 4
 
 end
 
@@ -576,7 +624,7 @@ to set-will-feup-colleagues
     set prob-will-feup-colleagues (item i selected-cluster-probs)
   ]
 
-  set will-feup-colleagues (i + 1)
+  set will-feup-colleagues i / 4
 
 end
 
@@ -1186,7 +1234,7 @@ ticks-per-cycle
 ticks-per-cycle
 1
 100
-20.0
+21.0
 1
 1
 NIL
