@@ -9,12 +9,12 @@ globals
   current-intersection     ;; the currently selected intersection
 
   ;; patch agentsets
-  intersections ;; agentset containing the patches that are intersections
-  roads         ;; agentset containing the patches that are roads
+  intersections            ;; agentset containing the patches that are intersections
+  roads                    ;; agentset containing the patches that are roads
   feup
 
-  cluster-size-list ;; list containing the number of elems for each cluster
-  total-co-emissions
+  cluster-size-list        ;; list containing the number of elems for each cluster
+  total-co-emissions       ;; CO emissions by all the cars
 
   useful-intersections
 
@@ -23,28 +23,33 @@ globals
 
 turtles-own
 [
-  speed     ;; the speed of the turtle
-  up-car?   ;; true if the turtle moves downwards and false if it moves to the right
-  wait-time ;; the amount of time since the last time a turtle has moved
-  work      ;; the patch where they work
-  house     ;; the patch where they live
-  goal      ;; where am I currently headed
+  speed                    ;; the speed of the turtle
+  up-car?                  ;; true if the turtle moves downwards and false if it moves to the right
+  wait-time                ;; the amount of time since the last time a turtle has moved
+  work                     ;; the patch where they work
+  house                    ;; the patch where they live
+  goal                     ;; where am I currently headed
 
   ;;new vars
-  stops     ;; all the stops the turtle has to make (house,friend1,friend2,....,work)
-  indexStop ;; index of current goal
-  co-emissions-car
-  capacity ;;car seats available
-  been-matched ;;true if turtle was already matched in the macthing phase, false otherwise
-  rider ;;true if has car
-  matches ;;passengers the turtle needs to pick up
-  cluster
+  stops                    ;; all the stops the turtle has to make (house,friend1,friend2,....,work)
+  indexStop                ;; index of current goal
+  co-emissions-car         ;; car total emissions of CO
+  capacity                 ;;car seats available
+  been-matched             ;;true if turtle was already matched in the macthing phase, false otherwise
+  rider                    ;;true if has car
+  matches                  ;;passengers the turtle needs to pick up
+  cluster                  ;; cluster the user belongs [0,7]
 
 
-  year ;; university year the student frequents
-  course ;;course the student frequents
-  friends ;;other users which are friends with the user
+  year                     ;; university year the student frequents
+  course                   ;;course the student frequents
+  friends                  ;;other users which are friends with the user
   num-friends
+
+  will-friends             ;;willingness to share rides with friends [1, 5]
+  will-year-colleagues     ;;willingness to share rides with colleagues of the same year [1, 5]
+  will-degree-colleagues   ;;willingness to share rides with colleagues of the same degree [1, 5]
+  will-feup-colleagues     ;;willingness to share rides with colleagues from feup [1, 5]
 
 ]
 
@@ -134,10 +139,10 @@ to setup
 
     ;let i 26
     ;foreach stops[
-     ; [the-stop] -> ask the-stop[
-      ;set pcolor i
-      ;set i (i + 10)
-      ;]
+    ; [the-stop] -> ask the-stop[
+    ;set pcolor i
+    ;set i (i + 10)
+    ;]
     ;]
 
     ;;set first goal "house"
@@ -203,25 +208,25 @@ to setup-patches
   ]
   set intersections roads with [
     ((floor ((pxcor + max-pxcor - floor (grid-x-inc - 1)) mod grid-x-inc) = 0) and
-    (floor ((pycor + max-pycor) mod grid-y-inc) = 0))
+      (floor ((pycor + max-pycor) mod grid-y-inc) = 0))
   ]
 
   set useful-intersections roads with  [
     ((floor ((pxcor + max-pxcor - floor (grid-x-inc - 1)) mod grid-x-inc) = 0) and
-    (floor ((pycor + max-pycor) mod grid-y-inc) = 0)) or
+      (floor ((pycor + max-pycor) mod grid-y-inc) = 0)) or
     ((floor ((pxcor + max-pxcor - floor (grid-x-inc - 1)) mod grid-x-inc) = 0) and (pycor = max-pycor)) or
     ((floor ((pycor + max-pycor) mod grid-y-inc) = 0) and (pxcor = min-pxcor))
   ]
 
   ask roads [ set pcolor white ]
 
-   ask roads [
+  ask roads [
 
     if pxcor = max-pxcor and pycor = min-pycor[
       set feup self
       set pcolor black
     ]
-    ]
+  ]
   setup-intersections
 
 end
@@ -239,7 +244,7 @@ to setup-intersections
     set my-column floor ((pxcor + max-pxcor) / grid-x-inc)
 
     if pxcor != min-pxcor and pycor != max-pycor[
-     set-signal-colors
+      set-signal-colors
     ]
 
   ]
@@ -253,20 +258,21 @@ to setup-cars  ;; turtle procedure
   ifelse intersection? [
     ifelse random 2 = 0
       [ set up-car? true ]
-      [ set up-car? false ]
+    [ set up-car? false ]
   ]
   [ ; if the turtle is on a vertical road (rather than a horizontal one)
     ifelse (floor ((pxcor + max-pxcor - floor(grid-x-inc - 1)) mod grid-x-inc) = 0)
       [ set up-car? true ]
-      [ set up-car? false ]
+    [ set up-car? false ]
   ]
   ifelse up-car?
     [ set heading 180 ]
-    [ set heading 90 ]
+  [ set heading 90 ]
 
   let possible-locations no-patches
   set-cluster
   set-capacity
+  set-willingnesses
   while [count (possible-locations) = 0]
   [
     let distance-to-feup get-distance-to-feup
@@ -293,6 +299,10 @@ to set-personal-vars
     ;print "estes sao os meus friends"
     ask friends [
       set friends (turtle-set friends myself)
+      ;print "e os meus friends finais do friend sao"
+      ;ask friends [
+      ;print self
+      ;]
       set num-friends num-friends - 1
     ]
 
@@ -307,18 +317,18 @@ to set-stops
     ask matches [
       ifelse(member? patch-here useful-intersections)
       [
-      let match-patch patch-here
-      let neigh [neighbors] of match-patch
-      let not-roads neigh with [not member? self roads]
-      let neighbor one-of not-roads
-      ask myself[ set stops lput neighbor stops]
+        let match-patch patch-here
+        let neigh [neighbors] of match-patch
+        let not-roads neigh with [not member? self roads]
+        let neighbor one-of not-roads
+        ask myself[ set stops lput neighbor stops]
       ]
       [
-      let match-patch patch-here
-      let neigh [neighbors4] of match-patch
-      let not-roads neigh with [not member? self roads]
-      let neighbor one-of not-roads
-      ask myself[ set stops lput neighbor stops]
+        let match-patch patch-here
+        let neigh [neighbors4] of match-patch
+        let not-roads neigh with [not member? self roads]
+        let neighbor one-of not-roads
+        ask myself[ set stops lput neighbor stops]
       ]
 
       die
@@ -331,8 +341,8 @@ to set-stops
     let i 26
     foreach stops[
       [the-stop] -> ask the-stop[
-      set pcolor i
-      set i (i + 10)
+        set pcolor i
+        set i (i + 10)
       ]
     ]
 
@@ -375,11 +385,11 @@ to distance-matching
   foreach list-distances [
     [i]-> if not [been-matched] of item 1 i and not [rider] of item 1 i and not [been-matched] of item 0 i and [capacity] of item 0 i > 0
     [
-     ask item 0 i [
-      set matches lput item 1 i matches
-      set capacity capacity - 1
-      set rider true
-    ]
+      ask item 0 i [
+        set matches lput item 1 i matches
+        set capacity capacity - 1
+        set rider true
+      ]
       ask item 1 i [
         set been-matched true
       ]
@@ -461,6 +471,127 @@ end
 ;; Find a road patch without any turtles on it and place the turtle there.
 to put-on-empty-road  ;; turtle procedure
   move-to one-of roads with [ not any? turtles-on self ]
+end
+
+
+to set-will-friends
+  let will-friends-probs [
+    [0 0 0 0.142857142857143 1]
+    [0 0 0 0.169230769230769 1]
+    [0 0 0.125 0.446428571428571 1]
+    [0 0 0.029197080291971 0.27007299270073 1 ]
+    [0 0 0 0.142857142857143 1 ]
+    [0 0 0.072916666666667 0.322916666666667 1]
+    [0.368421052631579 0.631578947368421 1 1 1]
+    [0 0 0 0.125 1]
+  ]
+
+  let selected-cluster-probs item cluster will-friends-probs
+  let random-num random-float 1
+  let i 0
+  let prob-will-friends (item i selected-cluster-probs)
+
+  while [random-num > prob-will-friends]
+  [
+    set i (i + 1)
+    set prob-will-friends (item i selected-cluster-probs)
+  ]
+
+  set will-friends (i + 1)
+
+end
+
+to set-will-year-colleagues
+  let will-year-colleagues-probs [
+    [0 0.111111111111111 0.253968253968254 0.682539682539683 1]
+    [0.076923076923077 0.2 0.584615384615385 0.984615384615385 1]
+    [0 0.035714285714286 0.232142857142857 0.696428571428571 1]
+    [0.007299270072993 0.021897810218978 0.18978102189781 0.656934306569343 1]
+    [0.071428571428572 0.166666666666667 0.30952380952381 0.714285714285714 1]
+    [0 0.010416666666667 0.1875 0.5 1]
+    [0.473684210526316 0.763157894736842 0.973684210526316 1 1]
+    [0 0.03125 0.0625 0.59375 1]
+  ]
+
+  let selected-cluster-probs item cluster will-year-colleagues-probs
+  let random-num random-float 1
+  let i 0
+  let prob-will-year-colleagues (item i selected-cluster-probs)
+
+  while [random-num > prob-will-year-colleagues]
+  [
+    set i (i + 1)
+    set prob-will-year-colleagues (item i selected-cluster-probs)
+  ]
+
+  set will-year-colleagues (i + 1)
+
+end
+
+
+to set-will-degree-colleagues
+  let will-degree-colleagues-probs [
+    [0.015873015873016 0.19047619047619 0.412698412698413 0.793650793650794 1]
+    [0.123076923076923 0.523076923076923 1 1 1]
+    [0 0.035714285714286 0.321428571428571 0.732142857142857 1]
+    [0.007299270072993 0.051094890510949 0.35036496350365 0.766423357664234 1]
+    [0.119047619047619 0.261904761904762 0.523809523809524 0.761904761904762 1]
+    [0 0 0.177083333333333 0.604166666666667 1]
+    [0.5 0.789473684210526 0.789473684210526 0.973684210526316 1]
+    [0 0.03125 0.21875 0.75 1]
+
+  ]
+
+  let selected-cluster-probs item cluster will-degree-colleagues-probs
+  let random-num random-float 1
+  let i 0
+  let prob-will-degree-colleagues (item i selected-cluster-probs)
+
+  while [random-num > prob-will-degree-colleagues]
+  [
+    set i (i + 1)
+    set prob-will-degree-colleagues (item i selected-cluster-probs)
+  ]
+
+  set will-degree-colleagues (i + 1)
+
+end
+
+
+to set-will-feup-colleagues
+  let will-feup-colleagues-probs [
+    [0.063492063492064 0.365079365079365 0.650793650793651 0.888888888888889 1]
+    [0.384615384615385 0.8 1 1 1]
+    [0 0.178571428571429 0.553571428571429 0.839285714285714 1]
+    [0.058394160583942 0.291970802919708 0.642335766423358 0.875912408759124 1]
+    [0.214285714285714 0.476190476190476 0.666666666666667 0.857142857142857 1]
+    [0.03125 0.166666666666667 0.46875 0.729166666666667 1]
+    [0.657894736842105 0.842105263157895 1 1 1]
+    [0 0.15625 0.53125 0.84375 1]
+  ]
+
+  let selected-cluster-probs item cluster will-feup-colleagues-probs
+  let random-num random-float 1
+  let i 0
+  let prob-will-feup-colleagues (item i selected-cluster-probs)
+
+  while [random-num > prob-will-feup-colleagues]
+  [
+    set i (i + 1)
+    set prob-will-feup-colleagues (item i selected-cluster-probs)
+  ]
+
+  set will-feup-colleagues (i + 1)
+
+end
+
+
+
+to set-willingnesses
+  set-will-friends
+  set-will-year-colleagues
+  set-will-degree-colleagues
+  set-will-feup-colleagues
 end
 
 to set-capacity
@@ -599,6 +730,7 @@ to go
   ask turtles [
     remove-turtles-at-goal
   ]
+
   ask turtles [
     face next-patch ;; car heads towards its goal
     set-car-speed
@@ -697,14 +829,14 @@ to set-car-speed  ;; turtle procedure
   [
     ifelse up-car?
       [ set-speed 0 -1 ]
-      [ set-speed 1 0 ]
+    [ set-speed 1 0 ]
   ]
 end
 
 ;; set the speed variable of the turtle to an appropriate value (not exceeding the
 ;; speed limit) based on whether there are turtles on the patch in front of the turtle
 to set-speed [ delta-x delta-y ]  ;; turtle procedure
-  ;; get the turtles on the patch in front of the turtle
+                                  ;; get the turtles on the patch in front of the turtle
   let turtles-ahead turtles-at delta-x delta-y
 
   ;; if there are turtles in front of the turtle, slow down
@@ -725,21 +857,21 @@ end
 to slow-down  ;; turtle procedure
   ifelse speed <= 0
     [ set speed 0 ]
-    [ set speed speed - acceleration ]
+  [ set speed speed - acceleration ]
 end
 
 ;; increase the speed of the car
 to speed-up  ;; turtle procedure
   ifelse speed > speed-limit
     [ set speed speed-limit ]
-    [ set speed speed + acceleration ]
+  [ set speed speed + acceleration ]
 end
 
 ;; set the color of the car to a different color based on how fast the car is moving
 to set-car-color  ;; turtle procedure
   ifelse speed < (speed-limit / 2)
     [ set color blue ]
-    [ set color cyan - 2 ]
+  [ set color cyan - 2 ]
 end
 
 ;; keep track of the number of stopped cars and the amount of time a car has been stopped
@@ -769,16 +901,16 @@ end
 to remove-turtles-at-goal
   ;;if i am on my goal then i update my go
 
-    if (member? patch-here [neighbors4] of goal)[
+  if (member? patch-here [neighbors4] of goal)[
     if(indexStop >= (length stops - 1))
-     [die]
+      [die]
   ]
 end
 
 ;; establish goal of driver and move to next patch along the way
 to-report next-patch
 
-    if (member? patch-here [neighbors4] of goal)[
+  if (member? patch-here [neighbors4] of goal)[
     ifelse(indexStop < (length stops - 1))
     [
       set indexStop (indexStop + 1)
@@ -966,7 +1098,7 @@ num-cars
 num-cars
 1
 20
-6.0
+20.0
 1
 1
 NIL
@@ -1250,7 +1382,7 @@ INPUTBOX
 1220
 160
 cluster-5
-6.0
+20.0
 1
 0
 Number
