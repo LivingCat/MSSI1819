@@ -120,38 +120,6 @@ to setup
     record-data
     ;; choose at random a location for the house
     set house one-of goal-candidates
-    ;; choose at random a location for work, make sure work is not located at same location as house
-
-    ;;set stops as an empty list
-    ;set stops []
-
-    ;;cada turtle tem um number of friends random
-    ;let numFriends random numFriendsMax
-    ;let numStops numFriends
-    ;;
-    ;let stopsAgentSet n-of numStops goal-candidates
-
-    ;let stopsAgentSet n-of numStops goal-candidates
-    ;set stops [self] of (patch-set stopsAgentSet)
-    ;set stops lput feup stops
-
-    ;set stops [self] feup(list
-
-    ;let i 26
-    ;foreach stops[
-    ; [the-stop] -> ask the-stop[
-    ;set pcolor i
-    ;set i (i + 10)
-    ;]
-    ;]
-
-    ;;set first goal "house"
-    ;set goal first stops
-    ;;set first index current stop
-    ;set indexStop 0
-
-
-
   ]
 
   ;; give the turtles an initial speed
@@ -291,18 +259,12 @@ to set-personal-vars
   ]
 
   ask turtles [
-    ;print "eu sou"
-    ;print self
+
     let num min (list num-friends count turtles with [self != myself and num-friends > 0 and not member? self [friends] of myself])
     set friends (turtle-set friends n-of num turtles with [self != myself and num-friends > 0 and not member? self [friends] of myself])
 
-    ;print "estes sao os meus friends"
     ask friends [
       set friends (turtle-set friends myself)
-      ;print "e os meus friends finais do friend sao"
-      ;ask friends [
-      ;print self
-      ;]
       set num-friends num-friends - 1
     ]
 
@@ -334,7 +296,7 @@ to set-stops
       die
     ]
 
-    set stops sort-by [[stop1 stop2] -> [distance feup] of stop1 > [distance feup] of stop2] stops
+    set stops order-patches stops patch-here
 
     set stops lput feup stops
 
@@ -404,11 +366,6 @@ end
 
 to best-matching
   ask turtles[
-    show self
-    type will-friends type " <friends " type will-year-colleagues type "<year " type will-degree-colleagues type "<degree " type will-feup-colleagues print "<feup"
-    type "year" type year type "course" print course
-    ask friends[print self]
-    show self
 
     if not been-matched[
       let possible-set turtles with [distance myself < 30 and self != myself]
@@ -454,19 +411,10 @@ end
 to-report score-group [group rider-turtle]
   let social-result social-score group rider-turtle
   let full-car-result full-car-score group rider-turtle
-  report social-result * full-car-result
+  let detour-result detour-score group rider-turtle
+  report detour-result
 end
 
-
-  ;year                     ;; university year the student frequents
-  ;course                   ;;course the student frequents
-  ;friends                  ;;other users which are friends with the user
-  ;num-friends
-
-  ;will-friends             ;;willingness to share rides with friends [1, 5]
-  ;will-year-colleagues     ;;willingness to share rides with colleagues of the same year [1, 5]
-  ;will-degree-colleagues   ;;willingness to share rides with colleagues of the same degree [1, 5]
-  ;will-feup-colleagues     ;;willingness to share rides with colleagues from feup [1, 5]
 to-report social-score [group rider-turtle]
   let result 1
   foreach group[
@@ -482,6 +430,75 @@ end
 
 to-report full-car-score [group rider-turtle]
   report length group / [capacity] of rider-turtle
+end
+
+to-report detour-score [group rider-turtle]
+  let patches-list []
+  foreach group[
+    [elem]-> set patches-list lput [patch-here] of elem patches-list
+  ]
+  let ordered-patches order-patches patches-list [patch-here] of rider-turtle
+  let group-distance path-distance ordered-patches [patch-here] of rider-turtle
+  let minimum-distance [distance feup] of rider-turtle
+  let r-min 0.1
+  let alpha ( ln r-min )/ minimum-distance
+
+  ifelse group-distance < minimum-distance[
+   report 1
+  ]
+  [ifelse group-distance < 2 * minimum-distance[
+    report e ^((group-distance - minimum-distance) * alpha)
+    ][
+    report r-min
+    ]]
+
+
+end
+
+
+
+to-report order-patches[patches-list starting-patch]
+  let possible-orders permutations patches-list
+  let minimum-distance 999999999999999
+  let minimum-order []
+  foreach possible-orders[
+    [order] -> let dist path-distance order starting-patch
+    if dist < minimum-distance[
+      set minimum-distance dist
+      set minimum-order order
+    ]
+  ]
+  report minimum-order
+end
+
+to-report path-distance [patches-list starting-patch]
+  let full-path patches-list
+  set full-path insert-item 0 full-path starting-patch
+  set full-path lput feup full-path
+  let full-distance 0
+  foreach range (length full-path - 1)[
+    [i] -> ask item i full-path[
+      set full-distance full-distance + distance item (i + 1) full-path
+    ]
+  ]
+  report full-distance
+end
+
+
+to-report permutations [#lst] ;Return all permutations of `lst`
+  let n length #lst
+  if (n = 0) [report #lst]
+  if (n = 1) [report (list #lst)]
+  if (n = 2) [report (list #lst reverse #lst)]
+  let result []
+  let idxs range n
+  foreach idxs [? ->
+    let xi item ? #lst
+    foreach (permutations remove-item ? #lst) [?? ->
+      set result lput (fput xi ??) result
+    ]
+  ]
+  report result
 end
 
 to-report comb [_m _s]
@@ -1141,7 +1158,7 @@ num-cars
 num-cars
 1
 20
-6.0
+4.0
 1
 1
 NIL
@@ -1425,7 +1442,7 @@ INPUTBOX
 1220
 160
 cluster-5
-6.0
+4.0
 1
 0
 Number
