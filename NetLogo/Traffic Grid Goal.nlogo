@@ -311,7 +311,6 @@ to set-stops
     ]
 
     set goal first stops
-    show goal
     ;;set first index current stop
     set indexStop 0
   ]
@@ -366,15 +365,20 @@ to distance-matching
 end
 
 to best-matching
-  ask turtles[
+  ask turtles with [capacity > 0][
     if not been-matched[
       let possible-set turtles with [distance myself < 30 and self != myself]
       if count possible-set > 0[
         ;tem de se reduzir o possible set talvez fazer o score para cada pessoa e tirar as que têm menos de 0.5
         let possible []
-        ask possible-set[
+        let reduced-possible-set no-turtles
+        let num min (list 18 count possible-set)
+        set reduced-possible-set max-n-of num possible-set [score-person self myself]
+
+        ask reduced-possible-set[
           set possible lput self possible
         ]
+
         let possible-groups []
         let range-capacity []
         ifelse capacity = 1[
@@ -407,11 +411,18 @@ to best-matching
         ask matches[
           set been-matched true
         ]
+        show self
       ]
     ]
   ]
-  print "done"
 
+end
+
+to-report score-person [person rider-turtle]
+  let group (list person)
+  let social-result social-score group rider-turtle
+  let detour-result detour-score group rider-turtle
+  report detour-result * social-result
 end
 
 to-report score-groups [possible-groups rider-turtle]
@@ -1173,7 +1184,7 @@ num-cars
 num-cars
 1
 20
-20.0
+130.0
 1
 1
 NIL
@@ -1402,7 +1413,7 @@ INPUTBOX
 1070
 90
 cluster-0
-0.0
+10.0
 1
 0
 Number
@@ -1413,7 +1424,7 @@ INPUTBOX
 1145
 90
 cluster-1
-0.0
+10.0
 1
 0
 Number
@@ -1424,7 +1435,7 @@ INPUTBOX
 1220
 90
 cluster-2
-0.0
+10.0
 1
 0
 Number
@@ -1435,7 +1446,7 @@ INPUTBOX
 1070
 160
 cluster-3
-0.0
+10.0
 1
 0
 Number
@@ -1446,7 +1457,7 @@ INPUTBOX
 1145
 160
 cluster-4
-0.0
+10.0
 1
 0
 Number
@@ -1457,7 +1468,7 @@ INPUTBOX
 1220
 160
 cluster-5
-20.0
+60.0
 1
 0
 Number
@@ -1468,7 +1479,7 @@ INPUTBOX
 1070
 230
 cluster-6
-0.0
+10.0
 1
 0
 Number
@@ -1479,7 +1490,7 @@ INPUTBOX
 1145
 230
 cluster-7
-0.0
+10.0
 1
 0
 Number
