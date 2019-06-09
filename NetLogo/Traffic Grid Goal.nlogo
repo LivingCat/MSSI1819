@@ -53,6 +53,8 @@ turtles-own
   will-degree-colleagues   ;;willingness to share rides with colleagues of the same degree [1, 5]
   will-feup-colleagues     ;;willingness to share rides with colleagues from feup [1, 5]
 
+  last-patches             ;;the last 5 patches
+  same-patches-counter     ;;the number of times that the last 5 patches were the same
 ]
 
 patches-own
@@ -115,6 +117,7 @@ to setup
     set rider false
     set stops []
     set matches []
+    set last-patches  []
     set friends no-turtles
 
     setup-cars
@@ -415,7 +418,6 @@ to best-matching
         ask matches[
           set been-matched true
         ]
-        show self
       ]
     ]
   ]
@@ -847,6 +849,22 @@ to go
   ]
 
   ask turtles [
+    ifelse member? patch-here last-patches[
+      set same-patches-counter same-patches-counter + 1
+    ][
+      if length last-patches >= 5[
+        set last-patches remove-item 0 last-patches
+      ]
+      set last-patches lput patch-here last-patches
+      set same-patches-counter 0
+    ]
+
+    if same-patches-counter > 27[
+      show "estava preso vou passar ao proximo"
+      set same-patches-counter 0
+      set indexStop (indexStop + 1)
+      set goal (item indexStop stops)
+    ]
     face next-patch ;; car heads towards its goal
     set-car-speed
     fd speed
@@ -1427,7 +1445,7 @@ INPUTBOX
 1070
 90
 cluster-0
-20.0
+0.0
 1
 0
 Number
@@ -1438,7 +1456,7 @@ INPUTBOX
 1145
 90
 cluster-1
-20.0
+0.0
 1
 0
 Number
@@ -1449,7 +1467,7 @@ INPUTBOX
 1220
 90
 cluster-2
-50.0
+0.0
 1
 0
 Number
@@ -1460,7 +1478,7 @@ INPUTBOX
 1070
 160
 cluster-3
-20.0
+0.0
 1
 0
 Number
@@ -1471,7 +1489,7 @@ INPUTBOX
 1145
 160
 cluster-4
-20.0
+0.0
 1
 0
 Number
@@ -1482,7 +1500,7 @@ INPUTBOX
 1220
 160
 cluster-5
-200.0
+50.0
 1
 0
 Number
@@ -1493,7 +1511,7 @@ INPUTBOX
 1070
 230
 cluster-6
-20.0
+0.0
 1
 0
 Number
@@ -1504,7 +1522,7 @@ INPUTBOX
 1145
 230
 cluster-7
-50.0
+0.0
 1
 0
 Number
