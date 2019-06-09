@@ -297,7 +297,9 @@ to set-stops
     ]
 
     set stops order-patches stops patch-here
+  ]
 
+  ask turtles[
     set stops lput feup stops
 
     let i 26
@@ -309,11 +311,10 @@ to set-stops
     ]
 
     set goal first stops
+    show goal
     ;;set first index current stop
     set indexStop 0
-    ;show stops
   ]
-
 
 end
 
@@ -366,33 +367,47 @@ end
 
 to best-matching
   ask turtles[
-
     if not been-matched[
       let possible-set turtles with [distance myself < 30 and self != myself]
-      let possible []
-      ask possible-set[
-       set possible lput self possible
-      ]
-      let possible-groups []
-      let range-capacity []
-      ifelse capacity = 1[
-        set range-capacity (list 1)
-      ][
-        set range-capacity (range 1 (capacity + 1))
-      ]
-      foreach range-capacity
-      [ [i] ->
-        let perms []
+      if count possible-set > 0[
+        ;tem de se reduzir o possible set talvez fazer o score para cada pessoa e tirar as que têm menos de 0.5
+        let possible []
+        ask possible-set[
+          set possible lput self possible
+        ]
+        let possible-groups []
+        let range-capacity []
+        ifelse capacity = 1[
+          set range-capacity (list 1)
+        ][
+          set range-capacity (range 1 (capacity + 1))
+        ]
+        foreach range-capacity
+        [ [i] ->
+          let perms []
 
-        set perms comb i possible
+          set perms comb i possible
 
-        foreach perms[
-          [perm] -> set possible-groups lput perm possible-groups
+          foreach perms[
+            [perm] -> set possible-groups lput perm possible-groups
+          ]
+        ]
+        let scored-groups score-groups possible-groups self
+        let max-score-index 0
+        let max-score 0
+        foreach range length scored-groups[
+          [i] -> if item i scored-groups > max-score[
+            set max-score item i scored-groups
+            set max-score-index i
+          ]
+        ]
+        set matches turtles with [member? self item max-score-index possible-groups]
+        set been-matched true
+        set rider true
+        ask matches[
+          set been-matched true
         ]
       ]
-      let scored-groups score-groups possible-groups self
-      show possible-groups
-      show scored-groups
     ]
   ]
   print "done"
@@ -412,7 +427,7 @@ to-report score-group [group rider-turtle]
   let social-result social-score group rider-turtle
   let full-car-result full-car-score group rider-turtle
   let detour-result detour-score group rider-turtle
-  report detour-result
+  report detour-result * full-car-result * social-result
 end
 
 to-report social-score [group rider-turtle]
@@ -441,7 +456,14 @@ to-report detour-score [group rider-turtle]
   let group-distance path-distance ordered-patches [patch-here] of rider-turtle
   let minimum-distance [distance feup] of rider-turtle
   let r-min 0.1
-  let alpha ( ln r-min )/ minimum-distance
+
+  let alpha 0
+  ifelse minimum-distance = 0[
+    set alpha ( ln r-min )/ 0.01
+  ]
+  [
+    set alpha ( ln r-min )/ minimum-distance
+  ]
 
   ifelse group-distance < minimum-distance[
    report 1
@@ -508,13 +530,6 @@ to-report comb [_m _s]
   let _lista map [? -> fput item 0 _s ?] comb (_m - 1) _rest
   let _listb comb _m _rest
   report (sentence _lista _listb)
-end
-
-
-to-report min-positions [my-list]
-  let min-value min my-list
-  let indices n-values (length my-list) [i -> i]
-  report filter [i -> item i my-list = min-value] indices
 end
 
 to-report calculate-intersections [distancia]
@@ -1158,7 +1173,7 @@ num-cars
 num-cars
 1
 20
-4.0
+20.0
 1
 1
 NIL
@@ -1442,7 +1457,7 @@ INPUTBOX
 1220
 160
 cluster-5
-4.0
+20.0
 1
 0
 Number
