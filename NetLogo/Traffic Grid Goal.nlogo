@@ -37,7 +37,8 @@ turtles-own
   co-emissions-car         ;; car total emissions of CO
   capacity                 ;;car seats available
   been-matched             ;;true if turtle was already matched in the macthing phase, false otherwise
-  rider                    ;;true if has car
+  rider                    ;;true if gives rides
+  has-car                    ;;true if has car
   matches                  ;;passengers the turtle needs to pick up
   cluster                  ;; cluster the user belongs [0,7]
 
@@ -242,6 +243,7 @@ to setup-cars  ;; turtle procedure
   set-cluster
   set-capacity
   set-willingnesses
+  set-has-car
   while [count (possible-locations) = 0]
   [
     let distance-to-feup get-distance-to-feup
@@ -560,6 +562,27 @@ to put-on-empty-road  ;; turtle procedure
   move-to one-of roads with [ not any? turtles-on self ]
 end
 
+
+to set-has-car
+  let probs-no-car [
+    0.904761904761905
+    0.169230769230769
+    0.910714285714286
+    0.678832116788321
+    0.571428571428571
+    0
+    0.578947368421053
+    0.875
+  ]
+
+  let prob-no-car item cluster probs-no-car
+  let random-num random-float 1
+
+  ifelse random-num <= prob-no-car
+  [set has-car false]
+  [set has-car true]
+
+end
 
 to set-will-friends
   let will-friends-probs [
