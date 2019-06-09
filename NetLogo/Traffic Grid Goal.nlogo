@@ -6,6 +6,7 @@ globals
                            ;; it is to accelerate or decelerate
   phase                    ;; keeps track of the phase
   num-cars-stopped         ;; the number of cars that are stopped during a single pass thru the go procedure
+  num-cars                 ;; the number of cars
   current-intersection     ;; the currently selected intersection
 
   ;; patch agentsets
@@ -805,6 +806,8 @@ end
 ;; Run the simulation
 to go
 
+  if not any? turtles [ stop ] ;; exits if there are no more turtles
+
   ask current-intersection [ update-variables ]
 
   ;; have the intersections change their color
@@ -1175,21 +1178,6 @@ power?
 1
 -1000
 
-SLIDER
-10
-45
-205
-78
-num-cars
-num-cars
-1
-20
-130.0
-1
-1
-NIL
-HORIZONTAL
-
 PLOT
 -18
 579
@@ -1521,7 +1509,18 @@ CHOOSER
 matching-algorythm
 matching-algorythm
 "Random" "Min Distance" "Best!"
-2
+0
+
+MONITOR
+200
+145
+262
+190
+num-cars
+num-cars
+17
+1
+11
 
 @#$#@#$#@
 ## ACKNOWLEDGMENT
