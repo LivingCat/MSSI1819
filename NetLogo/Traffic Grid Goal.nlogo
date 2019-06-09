@@ -120,10 +120,7 @@ to setup
     setup-cars
     set-car-color ;; slower turtles are blue, faster ones are colored cyan
     record-data
-    ;; choose at random a location for the house
-    set house one-of goal-candidates
   ]
-
   ;; give the turtles an initial speed
   ask turtles [ set-car-speed ]
   set-personal-vars
@@ -137,7 +134,6 @@ to setup
   [
      best-matching
   ]]
-
   set-stops
   reset-ticks
 end
@@ -185,7 +181,10 @@ to setup-patches
     ((floor ((pxcor + max-pxcor - floor (grid-x-inc - 1)) mod grid-x-inc) = 0) and
       (floor ((pycor + max-pycor) mod grid-y-inc) = 0)) or
     ((floor ((pxcor + max-pxcor - floor (grid-x-inc - 1)) mod grid-x-inc) = 0) and (pycor = max-pycor)) or
-    ((floor ((pycor + max-pycor) mod grid-y-inc) = 0) and (pxcor = min-pxcor))
+    ((floor ((pycor + max-pycor) mod grid-y-inc) = 0) and (pxcor = min-pxcor)) or
+    ((pxcor = min-pxcor) and (pycor = min-pycor)) or
+    ((pxcor = min-pxcor) and (pycor = max-pycor)) or
+    ((pxcor = max-pxcor) and (pycor = max-pycor))
   ]
 
   ask roads [ set pcolor white ]
@@ -277,9 +276,12 @@ to set-personal-vars
 end
 
 to set-stops
-
+  ask turtles[
+    set stops (list);
+  ]
   ask turtles with [rider = true] [
     ask matches [
+
       ifelse(member? patch-here useful-intersections)
       [
         let match-patch patch-here
@@ -298,7 +300,6 @@ to set-stops
 
       die
     ]
-
     set stops order-patches stops patch-here
   ]
 
@@ -494,6 +495,7 @@ end
 
 
 to-report order-patches[patches-list starting-patch]
+  if length patches-list = 0[report (list)]
   let possible-orders permutations patches-list
   let minimum-distance 999999999999999
   let minimum-order []
@@ -512,6 +514,7 @@ to-report path-distance [patches-list starting-patch]
   set full-path insert-item 0 full-path starting-patch
   set full-path lput feup full-path
   let full-distance 0
+
   foreach range (length full-path - 1)[
     [i] -> ask item i full-path[
       set full-distance full-distance + distance item (i + 1) full-path
@@ -1248,7 +1251,7 @@ NIL
 T
 OBSERVER
 NIL
-NIL
+0
 NIL
 NIL
 1
@@ -1446,7 +1449,7 @@ INPUTBOX
 1220
 90
 cluster-2
-20.0
+50.0
 1
 0
 Number
@@ -1479,7 +1482,7 @@ INPUTBOX
 1220
 160
 cluster-5
-50.0
+200.0
 1
 0
 Number
@@ -1501,7 +1504,7 @@ INPUTBOX
 1145
 230
 cluster-7
-20.0
+50.0
 1
 0
 Number
@@ -1994,9 +1997,7 @@ NetLogo 6.1.0
     <steppedValueSet variable="cluster-6" first="20" step="30" last="60"/>
     <steppedValueSet variable="cluster-7" first="20" step="30" last="60"/>
     <enumeratedValueSet variable="matching-algorythm">
-      <value value="&quot;Random&quot;"/>
       <value value="&quot;Min Distance&quot;"/>
-      <value value="&quot;Best!&quot;"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="grid-size-x">
       <value value="9"/>
