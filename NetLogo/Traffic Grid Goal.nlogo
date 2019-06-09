@@ -1424,7 +1424,7 @@ INPUTBOX
 1070
 90
 cluster-0
-10.0
+20.0
 1
 0
 Number
@@ -1435,7 +1435,7 @@ INPUTBOX
 1145
 90
 cluster-1
-10.0
+20.0
 1
 0
 Number
@@ -1446,7 +1446,7 @@ INPUTBOX
 1220
 90
 cluster-2
-10.0
+20.0
 1
 0
 Number
@@ -1457,7 +1457,7 @@ INPUTBOX
 1070
 160
 cluster-3
-10.0
+20.0
 1
 0
 Number
@@ -1468,7 +1468,7 @@ INPUTBOX
 1145
 160
 cluster-4
-10.0
+20.0
 1
 0
 Number
@@ -1479,7 +1479,7 @@ INPUTBOX
 1220
 160
 cluster-5
-60.0
+50.0
 1
 0
 Number
@@ -1490,7 +1490,7 @@ INPUTBOX
 1070
 230
 cluster-6
-10.0
+20.0
 1
 0
 Number
@@ -1501,7 +1501,7 @@ INPUTBOX
 1145
 230
 cluster-7
-10.0
+20.0
 1
 0
 Number
@@ -1532,7 +1532,7 @@ CHOOSER
 matching-algorythm
 matching-algorythm
 "Random" "Min Distance" "Best!"
-0
+1
 
 MONITOR
 200
@@ -1980,6 +1980,50 @@ NetLogo 6.1.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
+<experiments>
+  <experiment name="Experiment 1" repetitions="1" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>count turtles</metric>
+    <steppedValueSet variable="cluster-0" first="20" step="30" last="60"/>
+    <steppedValueSet variable="cluster-1" first="20" step="30" last="60"/>
+    <steppedValueSet variable="cluster-2" first="20" step="30" last="60"/>
+    <steppedValueSet variable="cluster-3" first="20" step="30" last="60"/>
+    <steppedValueSet variable="cluster-4" first="20" step="30" last="60"/>
+    <steppedValueSet variable="cluster-5" first="20" step="30" last="60"/>
+    <steppedValueSet variable="cluster-6" first="20" step="30" last="60"/>
+    <steppedValueSet variable="cluster-7" first="20" step="30" last="60"/>
+    <enumeratedValueSet variable="matching-algorythm">
+      <value value="&quot;Random&quot;"/>
+      <value value="&quot;Min Distance&quot;"/>
+      <value value="&quot;Best!&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grid-size-x">
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grid-size-y">
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="numFriendsMax">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="num-passengers">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="power?">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="current-phase">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="ticks-per-cycle">
+      <value value="21"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="current-auto?">
+      <value value="true"/>
+    </enumeratedValueSet>
+  </experiment>
+</experiments>
 @#$#@#$#@
 @#$#@#$#@
 default
