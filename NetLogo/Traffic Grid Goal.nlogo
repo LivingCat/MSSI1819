@@ -43,6 +43,8 @@ turtles-own
   cluster                  ;; cluster the user belongs [0,7]
 
 
+  rider-score-group        ;; mean score between the rider and its passengers
+
   year                     ;; university year the student frequents
   course                   ;;course the student frequents
   friends                  ;;other users which are friends with the user
@@ -283,6 +285,7 @@ to set-stops
     set stops (list);
   ]
   ask turtles with [rider = true] [
+
     ask matches [
 
       ifelse(member? patch-here useful-intersections)
@@ -333,6 +336,11 @@ to random-matching
       ask aux-matches [
         set been-matched true
       ]
+
+      let aux-matches-list [ ]
+      ask aux-matches [ set aux-matches-list lput self aux-matches-list ]
+      set rider-score-group score-group aux-matches-list self
+
       set been-matched true
       set rider true
       set matches aux-matches
@@ -412,6 +420,11 @@ to best-matching
             set max-score-index i
           ]
         ]
+
+
+
+        set rider-score-group max-score
+
         set matches turtles with [member? self item max-score-index possible-groups]
         set been-matched true
         set rider true
@@ -461,6 +474,10 @@ to-report social-score [group rider-turtle]
 end
 
 to-report full-car-score [group rider-turtle]
+
+  if[capacity] of rider-turtle = 0
+  [report 1]
+
   report length group / [capacity] of rider-turtle
 end
 
@@ -1141,6 +1158,12 @@ to-report report-average-wait-time-cars
   report mean [wait-time] of turtles
 end
 
+to-report report-average-rider-score-group
+  if count turtles = 0
+  [report 0]
+  report mean [rider-score-group] of turtles
+end
+
 
 
 ; Copyright 2008 Uri Wilensky.
@@ -1581,7 +1604,7 @@ CHOOSER
 matching-algorythm
 matching-algorythm
 "Random" "Min Distance" "Best!"
-1
+0
 
 MONITOR
 200
@@ -2038,6 +2061,7 @@ NetLogo 6.1.0
     <metric>report-num-cars-stopped</metric>
     <metric>report-mean-speed-cars</metric>
     <metric>report-average-wait-time-cars</metric>
+    <metric>report-average-rider-score-group</metric>
     <enumeratedValueSet variable="cluster-0">
       <value value="20"/>
     </enumeratedValueSet>
@@ -2063,7 +2087,7 @@ NetLogo 6.1.0
       <value value="20"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="matching-algorythm">
-      <value value="&quot;Min Distance&quot;"/>
+      <value value="&quot;Random&quot;"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="grid-size-x">
       <value value="9"/>
