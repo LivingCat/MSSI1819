@@ -863,6 +863,8 @@ to go
       show "estava preso vou passar ao proximo"
       set same-patches-counter 0
       set indexStop (indexStop + 1)
+      if indexStop = (length stops) ;; se indexStop está no último stop
+      [ set indexStop 0 ]
       set goal (item indexStop stops)
     ]
     face next-patch ;; car heads towards its goal
@@ -1113,6 +1115,32 @@ to label-subject
     ]
   ]
 end
+
+;; Reporters
+to-report report-total-co-emissions
+  report total-co-emissions
+end
+
+to-report report-number-riders
+  report count turtles
+end
+
+to-report report-num-cars-stopped
+  report num-cars-stopped
+end
+
+to-report report-mean-speed-cars
+  if count turtles = 0
+  [report 0]
+  report mean [speed] of turtles
+end
+
+to-report report-average-wait-time-cars
+  if count turtles = 0
+  [report 0]
+  report mean [wait-time] of turtles
+end
+
 
 
 ; Copyright 2008 Uri Wilensky.
@@ -1445,7 +1473,7 @@ INPUTBOX
 1070
 90
 cluster-0
-0.0
+20.0
 1
 0
 Number
@@ -1456,7 +1484,7 @@ INPUTBOX
 1145
 90
 cluster-1
-0.0
+20.0
 1
 0
 Number
@@ -1467,7 +1495,7 @@ INPUTBOX
 1220
 90
 cluster-2
-0.0
+20.0
 1
 0
 Number
@@ -1478,7 +1506,7 @@ INPUTBOX
 1070
 160
 cluster-3
-0.0
+20.0
 1
 0
 Number
@@ -1489,7 +1517,7 @@ INPUTBOX
 1145
 160
 cluster-4
-0.0
+20.0
 1
 0
 Number
@@ -1500,7 +1528,7 @@ INPUTBOX
 1220
 160
 cluster-5
-50.0
+20.0
 1
 0
 Number
@@ -1511,7 +1539,7 @@ INPUTBOX
 1070
 230
 cluster-6
-0.0
+20.0
 1
 0
 Number
@@ -1522,7 +1550,7 @@ INPUTBOX
 1145
 230
 cluster-7
-0.0
+20.0
 1
 0
 Number
@@ -2002,18 +2030,38 @@ NetLogo 6.1.0
 @#$#@#$#@
 @#$#@#$#@
 <experiments>
-  <experiment name="Experiment 1" repetitions="1" runMetricsEveryStep="false">
+  <experiment name="Experiment 1" repetitions="2" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
-    <metric>count turtles</metric>
-    <steppedValueSet variable="cluster-0" first="20" step="30" last="60"/>
-    <steppedValueSet variable="cluster-1" first="20" step="30" last="60"/>
-    <steppedValueSet variable="cluster-2" first="20" step="30" last="60"/>
-    <steppedValueSet variable="cluster-3" first="20" step="30" last="60"/>
-    <steppedValueSet variable="cluster-4" first="20" step="30" last="60"/>
-    <steppedValueSet variable="cluster-5" first="20" step="30" last="60"/>
-    <steppedValueSet variable="cluster-6" first="20" step="30" last="60"/>
-    <steppedValueSet variable="cluster-7" first="20" step="30" last="60"/>
+    <metric>report-total-co-emissions</metric>
+    <metric>report-number-riders</metric>
+    <metric>report-num-cars-stopped</metric>
+    <metric>report-mean-speed-cars</metric>
+    <metric>report-average-wait-time-cars</metric>
+    <enumeratedValueSet variable="cluster-0">
+      <value value="20"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-1">
+      <value value="20"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-2">
+      <value value="20"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-3">
+      <value value="20"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-4">
+      <value value="20"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-5">
+      <value value="20"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-6">
+      <value value="20"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-7">
+      <value value="20"/>
+    </enumeratedValueSet>
     <enumeratedValueSet variable="matching-algorythm">
       <value value="&quot;Min Distance&quot;"/>
     </enumeratedValueSet>
