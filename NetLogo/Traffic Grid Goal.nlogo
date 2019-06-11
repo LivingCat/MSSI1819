@@ -38,7 +38,7 @@ turtles-own
   capacity                 ;;car seats available
   been-matched             ;;true if turtle was already matched in the macthing phase, false otherwise
   rider                    ;;true if gives rides
-  has-car                    ;;true if has car
+  has-car                  ;;true if has car
   matches                  ;;passengers the turtle needs to pick up
   cluster                  ;; cluster the user belongs [0,7]
 
@@ -139,6 +139,8 @@ to setup
   [
      best-matching
   ]]
+
+  remove-turtles-no-car-no-match
   set-stops
   reset-ticks
 end
@@ -328,7 +330,7 @@ to set-stops
 end
 
 to random-matching
-  ask turtles [
+  ask turtles with [capacity > 0 and has-car][
     ;only turtles that haven't been matched can become riders and take passengers
     if(been-matched = false) [
       let num min (list capacity count turtles with [been-matched = false and self != myself])
@@ -350,7 +352,7 @@ end
 
 to distance-matching
   let list-distances []
-  ask turtles [
+  ask turtles with [capacity > 0 and has-car][
     ask turtles with [self != myself] [
       let triple (list myself self distance myself)
       set list-distances lput triple list-distances
@@ -380,7 +382,7 @@ to distance-matching
 end
 
 to best-matching
-  ask turtles with [capacity > 0][
+  ask turtles with [capacity > 0 and has-car][
     if not been-matched[
       let possible-set turtles with [distance myself < 30 and self != myself]
       if count possible-set > 0[
@@ -1059,6 +1061,14 @@ to remove-turtles-at-goal
   ]
 end
 
+to remove-turtles-no-car-no-match
+  ask turtles with [not been-matched and not has-car][
+    print "nao tive boleia :( "
+    show self
+    die
+  ]
+end
+
 ;; establish goal of driver and move to next patch along the way
 to-report next-patch
 
@@ -1496,7 +1506,7 @@ INPUTBOX
 1070
 90
 cluster-0
-20.0
+0.0
 1
 0
 Number
@@ -1507,7 +1517,7 @@ INPUTBOX
 1145
 90
 cluster-1
-20.0
+0.0
 1
 0
 Number
@@ -1529,7 +1539,7 @@ INPUTBOX
 1070
 160
 cluster-3
-20.0
+0.0
 1
 0
 Number
@@ -1540,7 +1550,7 @@ INPUTBOX
 1145
 160
 cluster-4
-20.0
+0.0
 1
 0
 Number
@@ -1562,7 +1572,7 @@ INPUTBOX
 1070
 230
 cluster-6
-20.0
+0.0
 1
 0
 Number
