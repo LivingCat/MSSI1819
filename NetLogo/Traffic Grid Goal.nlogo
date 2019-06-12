@@ -36,6 +36,7 @@ turtles-own
   indexStop                ;; index of current goal
   co-emissions-car         ;; car total emissions of CO
   capacity                 ;;car seats available
+  orig-capacity
   been-matched             ;;true if turtle was already matched in the macthing phase, false otherwise
   rider                    ;;true if gives rides
   has-car                  ;;true if has car
@@ -361,6 +362,7 @@ to distance-matching
   ;sort using distances
   set list-distances sort-by [ [triple1 triple2] -> item 2 triple1 < item 2 triple2 ] list-distances
 
+
   foreach list-distances [
     [i]-> if not [been-matched] of item 1 i and not [rider] of item 1 i and not [been-matched] of item 0 i and [capacity] of item 0 i > 0
     [
@@ -377,6 +379,12 @@ to distance-matching
 
   ask turtles [
     set matches turtles with [member? self [matches] of myself]
+  ]
+
+   ask turtles with [rider = true][
+      let aux-matches-list [ ]
+      ask matches [ set aux-matches-list lput self aux-matches-list ]
+      set rider-score-group score-group aux-matches-list self
   ]
 
 end
@@ -477,10 +485,10 @@ end
 
 to-report full-car-score [group rider-turtle]
 
-  if[capacity] of rider-turtle = 0
+  if[orig-capacity] of rider-turtle = 0
   [report 1]
 
-  report length group / [capacity] of rider-turtle
+  report length group / [orig-capacity] of rider-turtle
 end
 
 to-report detour-score [group rider-turtle]
@@ -797,6 +805,7 @@ to set-capacity
   ]
 
   set capacity (item 0 line-cluster)
+  set orig-capacity (item 0 line-cluster)
 
 end
 
@@ -878,12 +887,10 @@ to go
       set same-patches-counter 0
     ]
 
-    if same-patches-counter > 27[
+    if same-patches-counter > 50 and goal != feup [
       show "estava preso vou passar ao proximo"
       set same-patches-counter 0
       set indexStop (indexStop + 1)
-      if indexStop = (length stops) ;; se indexStop está no último stop
-      [ set indexStop 0 ]
       set goal (item indexStop stops)
     ]
     face next-patch ;; car heads towards its goal
@@ -1506,7 +1513,7 @@ INPUTBOX
 1070
 90
 cluster-0
-0.0
+20.0
 1
 0
 Number
@@ -1517,7 +1524,7 @@ INPUTBOX
 1145
 90
 cluster-1
-0.0
+20.0
 1
 0
 Number
@@ -1539,7 +1546,7 @@ INPUTBOX
 1070
 160
 cluster-3
-0.0
+20.0
 1
 0
 Number
@@ -1550,7 +1557,7 @@ INPUTBOX
 1145
 160
 cluster-4
-0.0
+20.0
 1
 0
 Number
@@ -1572,7 +1579,7 @@ INPUTBOX
 1070
 230
 cluster-6
-0.0
+20.0
 1
 0
 Number
@@ -2063,7 +2070,7 @@ NetLogo 6.1.0
 @#$#@#$#@
 @#$#@#$#@
 <experiments>
-  <experiment name="Experiment 1" repetitions="2" runMetricsEveryStep="true">
+  <experiment name="Experiment 1" repetitions="5" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
     <metric>report-total-co-emissions</metric>
@@ -2098,6 +2105,8 @@ NetLogo 6.1.0
     </enumeratedValueSet>
     <enumeratedValueSet variable="matching-algorythm">
       <value value="&quot;Random&quot;"/>
+      <value value="&quot;Min Distance&quot;"/>
+      <value value="&quot;Best!&quot;"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="grid-size-x">
       <value value="9"/>
