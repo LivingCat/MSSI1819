@@ -1573,7 +1573,7 @@ INPUTBOX
 1070
 90
 cluster-0
-20.0
+11.0
 1
 0
 Number
@@ -1584,7 +1584,7 @@ INPUTBOX
 1145
 90
 cluster-1
-20.0
+12.0
 1
 0
 Number
@@ -1595,7 +1595,7 @@ INPUTBOX
 1220
 90
 cluster-2
-20.0
+10.0
 1
 0
 Number
@@ -1606,7 +1606,7 @@ INPUTBOX
 1070
 160
 cluster-3
-20.0
+25.0
 1
 0
 Number
@@ -1617,7 +1617,7 @@ INPUTBOX
 1145
 160
 cluster-4
-20.0
+8.0
 1
 0
 Number
@@ -1628,7 +1628,7 @@ INPUTBOX
 1220
 160
 cluster-5
-20.0
+18.0
 1
 0
 Number
@@ -1639,7 +1639,7 @@ INPUTBOX
 1070
 230
 cluster-6
-20.0
+7.0
 1
 0
 Number
@@ -1650,7 +1650,7 @@ INPUTBOX
 1145
 230
 cluster-7
-20.0
+6.0
 1
 0
 Number
@@ -1681,7 +1681,7 @@ CHOOSER
 matching-algorythm
 matching-algorythm
 "Random" "Min Distance" "Best!"
-0
+2
 
 MONITOR
 200
@@ -2130,7 +2130,7 @@ NetLogo 6.1.0
 @#$#@#$#@
 @#$#@#$#@
 <experiments>
-  <experiment name="Experiment 1" repetitions="5" runMetricsEveryStep="true">
+  <experiment name="Experiment 1" repetitions="30" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
     <metric>report-total-co-emissions</metric>
@@ -2142,28 +2142,28 @@ NetLogo 6.1.0
     <metric>report-average-walking-turtle-score</metric>
     <metric>report-number-walking-turtles</metric>
     <enumeratedValueSet variable="cluster-0">
-      <value value="20"/>
+      <value value="11"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-1">
-      <value value="20"/>
+      <value value="12"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-2">
-      <value value="20"/>
+      <value value="10"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-3">
-      <value value="20"/>
+      <value value="25"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-4">
-      <value value="20"/>
+      <value value="8"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-5">
-      <value value="20"/>
+      <value value="18"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-6">
-      <value value="20"/>
+      <value value="7"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-7">
-      <value value="20"/>
+      <value value="6"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="matching-algorythm">
       <value value="&quot;Random&quot;"/>
