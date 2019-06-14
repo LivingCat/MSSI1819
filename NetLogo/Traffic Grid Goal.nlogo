@@ -19,6 +19,10 @@ globals
 
   useful-intersections
 
+  rider-score-group-global  ;;global rider score group
+  score-walking-global      ;;global walking turtle score
+  walking-turtle-counter    ;;number of walking turtles
+
 ]
 
 
@@ -36,6 +40,7 @@ turtles-own
   indexStop                ;; index of current goal
   co-emissions-car         ;; car total emissions of CO
   capacity                 ;;car seats available
+  orig-capacity
   been-matched             ;;true if turtle was already matched in the macthing phase, false otherwise
   rider                    ;;true if gives rides
   has-car                  ;;true if has car
@@ -141,6 +146,8 @@ to setup
   ]]
 
   remove-turtles-no-car-no-match
+  show walking-turtle-counter
+  set-rider-score-group-global
   set-stops
   reset-ticks
 end
@@ -158,6 +165,8 @@ to setup-globals
 
   ;; don't make acceleration 0.1 since we could get a rounding error and end up on a patch boundary
   set acceleration 0.099
+  set walking-turtle-counter 0
+  set score-walking-global 0
 end
 
 ;; Make the patches have appropriate colors, set up the roads and intersections agentsets,
@@ -361,6 +370,7 @@ to distance-matching
   ;sort using distances
   set list-distances sort-by [ [triple1 triple2] -> item 2 triple1 < item 2 triple2 ] list-distances
 
+
   foreach list-distances [
     [i]-> if not [been-matched] of item 1 i and not [rider] of item 1 i and not [been-matched] of item 0 i and [capacity] of item 0 i > 0
     [
@@ -379,11 +389,18 @@ to distance-matching
     set matches turtles with [member? self [matches] of myself]
   ]
 
+   ask turtles with [rider = true][
+      let aux-matches-list [ ]
+      ask matches [ set aux-matches-list lput self aux-matches-list ]
+      set rider-score-group score-group aux-matches-list self
+  ]
+
 end
 
 to best-matching
   ask turtles with [capacity > 0 and has-car][
     if not been-matched[
+      show capacity
       let possible-set turtles with [distance myself < 30 and self != myself]
       if count possible-set > 0[
         ;tem de se reduzir o possible set talvez fazer o score para cada pessoa e tirar as que têm menos de 0.5
@@ -433,6 +450,7 @@ to best-matching
         ask matches[
           set been-matched true
         ]
+        type "capacity/matches" type capacity type "/" print matches
       ]
     ]
   ]
@@ -477,10 +495,10 @@ end
 
 to-report full-car-score [group rider-turtle]
 
-  if[capacity] of rider-turtle = 0
+  if[orig-capacity] of rider-turtle = 0
   [report 1]
 
-  report length group / [capacity] of rider-turtle
+  report length group / [orig-capacity] of rider-turtle
 end
 
 to-report detour-score [group rider-turtle]
@@ -513,6 +531,40 @@ to-report detour-score [group rider-turtle]
 
 end
 
+to-report score-walking [walking-turtle]
+  let bottom-percentile 0.010812230  ;; lowest 1-percentile
+  let top-percentile  63.50558397    ;; highest 99-percentile
+  let new-min 0
+
+  let distance0 3
+  let distance1 40
+
+  let old-range (top-percentile - bottom-percentile)
+  let new-range (sqrt (world-width ^ 2 + world-height ^ 2 )) - new-min
+
+  let minimum-distance (((distance0 - bottom-percentile) * new-range) / old-range) + new-min
+  let maximum-distance (((distance1 - bottom-percentile) * new-range) / old-range) + new-min
+
+  let group-distance [distance feup] of walking-turtle
+  let r-min 0.1
+
+  let alpha 0
+  ifelse (maximum-distance - minimum-distance) = 0[
+    set alpha ( ln r-min )/ 0.01
+  ]
+  [
+    set alpha ( ln r-min )/(maximum-distance - minimum-distance)
+  ]
+
+  ifelse group-distance < minimum-distance[
+   report 1
+  ]
+  [ifelse group-distance < maximum-distance[
+    report e ^((group-distance - minimum-distance) * alpha)
+    ][
+    report r-min
+    ]]
+end
 
 
 to-report order-patches[patches-list starting-patch]
@@ -753,8 +805,7 @@ to set-capacity
       [1	0.159090909090909]
       [3	0.227272727272727]
       [4	0.954545454545455]
-      [5	0.977272727272727]
-      [6	1]
+      [5	1]
     ]
     [
       [0	0.055555555555556]
@@ -797,6 +848,7 @@ to set-capacity
   ]
 
   set capacity (item 0 line-cluster)
+  set orig-capacity (item 0 line-cluster)
 
 end
 
@@ -878,12 +930,10 @@ to go
       set same-patches-counter 0
     ]
 
-    if same-patches-counter > 27[
+    if same-patches-counter > 50 and goal != feup [
       show "estava preso vou passar ao proximo"
       set same-patches-counter 0
       set indexStop (indexStop + 1)
-      if indexStop = (length stops) ;; se indexStop está no último stop
-      [ set indexStop 0 ]
       set goal (item indexStop stops)
     ]
     face next-patch ;; car heads towards its goal
@@ -1063,8 +1113,10 @@ end
 
 to remove-turtles-no-car-no-match
   ask turtles with [not been-matched and not has-car][
-    print "nao tive boleia :( "
-    show self
+    show score-walking self
+    set walking-turtle-counter walking-turtle-counter + 1
+    set score-walking-global  score-walking-global  + score-walking self
+    print "nao tive boleia :("
     die
   ]
 end
@@ -1143,6 +1195,13 @@ to label-subject
   ]
 end
 
+to set-rider-score-group-global
+  ifelse count turtles with [rider] = 0
+  [set rider-score-group-global 0]
+  [set rider-score-group-global mean [rider-score-group] of turtles with [rider]]
+end
+
+
 ;; Reporters
 to-report report-total-co-emissions
   report total-co-emissions
@@ -1169,9 +1228,17 @@ to-report report-average-wait-time-cars
 end
 
 to-report report-average-rider-score-group
-  if count turtles = 0
-  [report 0]
-  report mean [rider-score-group] of turtles
+  report rider-score-group-global
+end
+
+to-report report-average-walking-turtle-score
+  if(walking-turtle-counter = 0)
+  [report 1]
+  report score-walking-global / walking-turtle-counter
+end
+
+to-report report-number-walking-turtles
+  report walking-turtle-counter
 end
 
 
@@ -1506,7 +1573,7 @@ INPUTBOX
 1070
 90
 cluster-0
-0.0
+20.0
 1
 0
 Number
@@ -1517,7 +1584,7 @@ INPUTBOX
 1145
 90
 cluster-1
-0.0
+20.0
 1
 0
 Number
@@ -1539,7 +1606,7 @@ INPUTBOX
 1070
 160
 cluster-3
-0.0
+20.0
 1
 0
 Number
@@ -1550,7 +1617,7 @@ INPUTBOX
 1145
 160
 cluster-4
-0.0
+20.0
 1
 0
 Number
@@ -1572,7 +1639,7 @@ INPUTBOX
 1070
 230
 cluster-6
-0.0
+20.0
 1
 0
 Number
@@ -2063,7 +2130,7 @@ NetLogo 6.1.0
 @#$#@#$#@
 @#$#@#$#@
 <experiments>
-  <experiment name="Experiment 1" repetitions="2" runMetricsEveryStep="true">
+  <experiment name="Experiment 1" repetitions="5" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
     <metric>report-total-co-emissions</metric>
@@ -2072,6 +2139,8 @@ NetLogo 6.1.0
     <metric>report-mean-speed-cars</metric>
     <metric>report-average-wait-time-cars</metric>
     <metric>report-average-rider-score-group</metric>
+    <metric>report-average-walking-turtle-score</metric>
+    <metric>report-number-walking-turtles</metric>
     <enumeratedValueSet variable="cluster-0">
       <value value="20"/>
     </enumeratedValueSet>
@@ -2098,6 +2167,8 @@ NetLogo 6.1.0
     </enumeratedValueSet>
     <enumeratedValueSet variable="matching-algorythm">
       <value value="&quot;Random&quot;"/>
+      <value value="&quot;Min Distance&quot;"/>
+      <value value="&quot;Best!&quot;"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="grid-size-x">
       <value value="9"/>
