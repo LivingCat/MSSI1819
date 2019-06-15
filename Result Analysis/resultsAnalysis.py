@@ -6,8 +6,8 @@ reports = ["report-total-co-emissions", "report-number-riders", "report-num-cars
            "report-average-wait-time-cars", "report-average-rider-score-group", "report-average-walking-turtle-score", "report-number-walking-turtles"]
 number_runs = 120
 number_clusters = 8
-inputCSV = "./Runs/300People.csv"
-csv_name = "results_300People.csv"
+inputCSV = "./Runs/351People.csv"
+csv_name = "results_351People.csv"
 
 
 #outputs
