@@ -4,10 +4,10 @@ import pandas as pd
 # inputs
 reports = ["report-total-co-emissions", "report-number-riders", "report-num-cars-stopped", "report-mean-speed-cars",
            "report-average-wait-time-cars", "report-average-rider-score-group", "report-average-walking-turtle-score", "report-number-walking-turtles"]
-number_runs = 90
+number_runs = 120
 number_clusters = 8
-inputCSV = "20Random.csv"
-csv_name = "run_results97.csv"
+inputCSV = "97People40Runs.csv"
+csv_name = "run_results97_40runs.csv"
 
 
 #outputs
@@ -49,7 +49,7 @@ infos_sum = {
     }
 }
 
-df = pd.read_csv(inputCSV, skiprows=6,  sep=';',index_col=0)
+df = pd.read_csv(inputCSV, skiprows=6,  sep=',',index_col=0)
 for cluster_number in range(number_clusters):
     infos_sum["number_people"] += int(df.loc["cluster-{}".format(cluster_number)].iloc[0])
 
@@ -62,13 +62,9 @@ for index in range(1,number_runs + 1):
         column_score = pd.Index(reporters).get_loc(report)
         if report == "report-total-co-emissions" or report == "report-number-riders" or report == "report-total-co-emissions":
             infos_sum[matching][report] += float(run.loc["[max]"].iloc[column_score])
-            # print("{} run {} has {}".format(report, index, run.loc["[max]"].iloc[column_score]))
         else:
             infos_sum[matching][report] += float(run.loc["[mean]"].iloc[column_score])
-            
-            # print("{} run {} has {}".format(report, index, run.loc["[mean]"].iloc[column_score]))
 
-print(infos_sum)
 
 for matching in infos_sum:
     counter = 0
