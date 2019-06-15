@@ -1573,7 +1573,7 @@ INPUTBOX
 1070
 90
 cluster-0
-11.0
+36.0
 1
 0
 Number
@@ -1584,7 +1584,7 @@ INPUTBOX
 1145
 90
 cluster-1
-12.0
+37.0
 1
 0
 Number
@@ -1595,7 +1595,7 @@ INPUTBOX
 1220
 90
 cluster-2
-10.0
+32.0
 1
 0
 Number
@@ -1606,7 +1606,7 @@ INPUTBOX
 1070
 160
 cluster-3
-25.0
+78.0
 1
 0
 Number
@@ -1617,7 +1617,7 @@ INPUTBOX
 1145
 160
 cluster-4
-8.0
+24.0
 1
 0
 Number
@@ -1628,7 +1628,7 @@ INPUTBOX
 1220
 160
 cluster-5
-18.0
+54.0
 1
 0
 Number
@@ -1639,7 +1639,7 @@ INPUTBOX
 1070
 230
 cluster-6
-7.0
+22.0
 1
 0
 Number
@@ -1650,7 +1650,7 @@ INPUTBOX
 1145
 230
 cluster-7
-6.0
+18.0
 1
 0
 Number
@@ -2130,7 +2130,7 @@ NetLogo 6.1.0
 @#$#@#$#@
 @#$#@#$#@
 <experiments>
-  <experiment name="Experiment 1" repetitions="30" runMetricsEveryStep="true">
+  <experiment name="Experiment 1" repetitions="40" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
     <metric>report-total-co-emissions</metric>
@@ -2142,28 +2142,28 @@ NetLogo 6.1.0
     <metric>report-average-walking-turtle-score</metric>
     <metric>report-number-walking-turtles</metric>
     <enumeratedValueSet variable="cluster-0">
-      <value value="11"/>
+      <value value="36"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-1">
-      <value value="12"/>
+      <value value="37"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-2">
-      <value value="10"/>
+      <value value="32"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-3">
-      <value value="25"/>
+      <value value="78"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-4">
-      <value value="8"/>
+      <value value="24"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-5">
-      <value value="18"/>
+      <value value="54"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-6">
-      <value value="7"/>
+      <value value="22"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-7">
-      <value value="6"/>
+      <value value="18"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="matching-algorythm">
       <value value="&quot;Random&quot;"/>
