@@ -141,14 +141,15 @@ to setup
   [ifelse(matching-algorythm = "Min Distance")[
     distance-matching
   ]
-  [
-     best-matching
+    [ifelse(matching-algorythm = "None")[]
+      [best-matching]
   ]]
 
   remove-turtles-no-car-no-match
   show walking-turtle-counter
   set-rider-score-group-global
   set-stops
+
   reset-ticks
 end
 
@@ -1573,7 +1574,7 @@ INPUTBOX
 1070
 90
 cluster-0
-36.0
+42.0
 1
 0
 Number
@@ -1584,7 +1585,7 @@ INPUTBOX
 1145
 90
 cluster-1
-37.0
+43.0
 1
 0
 Number
@@ -1595,7 +1596,7 @@ INPUTBOX
 1220
 90
 cluster-2
-32.0
+37.0
 1
 0
 Number
@@ -1606,7 +1607,7 @@ INPUTBOX
 1070
 160
 cluster-3
-78.0
+91.0
 1
 0
 Number
@@ -1617,7 +1618,7 @@ INPUTBOX
 1145
 160
 cluster-4
-24.0
+28.0
 1
 0
 Number
@@ -1628,7 +1629,7 @@ INPUTBOX
 1220
 160
 cluster-5
-54.0
+64.0
 1
 0
 Number
@@ -1639,7 +1640,7 @@ INPUTBOX
 1070
 230
 cluster-6
-22.0
+25.0
 1
 0
 Number
@@ -1650,7 +1651,7 @@ INPUTBOX
 1145
 230
 cluster-7
-18.0
+21.0
 1
 0
 Number
@@ -1680,8 +1681,8 @@ CHOOSER
 305
 matching-algorythm
 matching-algorythm
-"Random" "Min Distance" "Best!"
-2
+"Random" "Min Distance" "Best!" "None"
+3
 
 MONITOR
 200
@@ -2142,33 +2143,31 @@ NetLogo 6.1.0
     <metric>report-average-walking-turtle-score</metric>
     <metric>report-number-walking-turtles</metric>
     <enumeratedValueSet variable="cluster-0">
-      <value value="36"/>
+      <value value="42"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-1">
-      <value value="37"/>
+      <value value="43"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-2">
-      <value value="32"/>
+      <value value="37"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-3">
-      <value value="78"/>
+      <value value="91"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-4">
-      <value value="24"/>
+      <value value="28"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-5">
-      <value value="54"/>
+      <value value="64"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-6">
-      <value value="22"/>
+      <value value="25"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-7">
-      <value value="18"/>
+      <value value="21"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="matching-algorythm">
-      <value value="&quot;Random&quot;"/>
-      <value value="&quot;Min Distance&quot;"/>
-      <value value="&quot;Best!&quot;"/>
+      <value value="&quot;None&quot;"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="grid-size-x">
       <value value="9"/>
