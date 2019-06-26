@@ -1547,36 +1547,6 @@ NIL
 NIL
 0
 
-SLIDER
-965
-445
-1137
-478
-numFriendsMax
-numFriendsMax
-0
-10
-0.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-965
-395
-1137
-428
-num-passengers
-num-passengers
-0
-10
-0.0
-1
-1
-NIL
-HORIZONTAL
-
 INPUTBOX
 1005
 30
@@ -2140,7 +2110,67 @@ NetLogo 6.1.0
 @#$#@#$#@
 @#$#@#$#@
 <experiments>
-  <experiment name="Experiment 1" repetitions="40" runMetricsEveryStep="true">
+  <experiment name="Experiment 10 people" repetitions="40" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>report-total-co-emissions</metric>
+    <metric>report-number-riders</metric>
+    <metric>report-num-cars-stopped</metric>
+    <metric>report-mean-speed-cars</metric>
+    <metric>report-average-wait-time-cars</metric>
+    <metric>report-average-rider-score-group</metric>
+    <metric>report-average-walking-turtle-score</metric>
+    <metric>report-number-walking-turtles</metric>
+    <enumeratedValueSet variable="cluster-0">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-1">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-2">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-3">
+      <value value="3"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-4">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-5">
+      <value value="2"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-6">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-7">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="matching-algorythm">
+      <value value="&quot;None&quot;"/>
+      <value value="&quot;Random&quot;"/>
+      <value value="&quot;Min Distance&quot;"/>
+      <value value="&quot;Best!&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grid-size-x">
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grid-size-y">
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="power?">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="current-phase">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="ticks-per-cycle">
+      <value value="21"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="current-auto?">
+      <value value="true"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="Experiment 50 people" repetitions="40" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
     <metric>report-total-co-emissions</metric>
@@ -2176,6 +2206,7 @@ NetLogo 6.1.0
       <value value="3"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="matching-algorythm">
+      <value value="&quot;None&quot;"/>
       <value value="&quot;Random&quot;"/>
       <value value="&quot;Min Distance&quot;"/>
       <value value="&quot;Best!&quot;"/>
@@ -2186,11 +2217,485 @@ NetLogo 6.1.0
     <enumeratedValueSet variable="grid-size-y">
       <value value="9"/>
     </enumeratedValueSet>
-    <enumeratedValueSet variable="numFriendsMax">
+    <enumeratedValueSet variable="power?">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="current-phase">
       <value value="0"/>
     </enumeratedValueSet>
-    <enumeratedValueSet variable="num-passengers">
+    <enumeratedValueSet variable="ticks-per-cycle">
+      <value value="21"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="current-auto?">
+      <value value="true"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="Experiment 75 people" repetitions="40" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>report-total-co-emissions</metric>
+    <metric>report-number-riders</metric>
+    <metric>report-num-cars-stopped</metric>
+    <metric>report-mean-speed-cars</metric>
+    <metric>report-average-wait-time-cars</metric>
+    <metric>report-average-rider-score-group</metric>
+    <metric>report-average-walking-turtle-score</metric>
+    <metric>report-number-walking-turtles</metric>
+    <enumeratedValueSet variable="cluster-0">
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-1">
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-2">
+      <value value="8"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-3">
+      <value value="19"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-4">
+      <value value="6"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-5">
+      <value value="14"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-6">
+      <value value="5"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-7">
+      <value value="5"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="matching-algorythm">
+      <value value="&quot;None&quot;"/>
+      <value value="&quot;Random&quot;"/>
+      <value value="&quot;Min Distance&quot;"/>
+      <value value="&quot;Best!&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grid-size-x">
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grid-size-y">
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="power?">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="current-phase">
       <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="ticks-per-cycle">
+      <value value="21"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="current-auto?">
+      <value value="true"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="Experiment 100 people" repetitions="40" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>report-total-co-emissions</metric>
+    <metric>report-number-riders</metric>
+    <metric>report-num-cars-stopped</metric>
+    <metric>report-mean-speed-cars</metric>
+    <metric>report-average-wait-time-cars</metric>
+    <metric>report-average-rider-score-group</metric>
+    <metric>report-average-walking-turtle-score</metric>
+    <metric>report-number-walking-turtles</metric>
+    <enumeratedValueSet variable="cluster-0">
+      <value value="12"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-1">
+      <value value="12"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-2">
+      <value value="11"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-3">
+      <value value="26"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-4">
+      <value value="8"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-5">
+      <value value="18"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-6">
+      <value value="7"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-7">
+      <value value="6"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="matching-algorythm">
+      <value value="&quot;None&quot;"/>
+      <value value="&quot;Random&quot;"/>
+      <value value="&quot;Min Distance&quot;"/>
+      <value value="&quot;Best!&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grid-size-x">
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grid-size-y">
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="power?">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="current-phase">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="ticks-per-cycle">
+      <value value="21"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="current-auto?">
+      <value value="true"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="Experiment 150 people" repetitions="40" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>report-total-co-emissions</metric>
+    <metric>report-number-riders</metric>
+    <metric>report-num-cars-stopped</metric>
+    <metric>report-mean-speed-cars</metric>
+    <metric>report-average-wait-time-cars</metric>
+    <metric>report-average-rider-score-group</metric>
+    <metric>report-average-walking-turtle-score</metric>
+    <metric>report-number-walking-turtles</metric>
+    <enumeratedValueSet variable="cluster-0">
+      <value value="18"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-1">
+      <value value="18"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-2">
+      <value value="16"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-3">
+      <value value="39"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-4">
+      <value value="12"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-5">
+      <value value="27"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-6">
+      <value value="11"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-7">
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="matching-algorythm">
+      <value value="&quot;None&quot;"/>
+      <value value="&quot;Random&quot;"/>
+      <value value="&quot;Min Distance&quot;"/>
+      <value value="&quot;Best!&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grid-size-x">
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grid-size-y">
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="power?">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="current-phase">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="ticks-per-cycle">
+      <value value="21"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="current-auto?">
+      <value value="true"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="Experiment 175 people" repetitions="40" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>report-total-co-emissions</metric>
+    <metric>report-number-riders</metric>
+    <metric>report-num-cars-stopped</metric>
+    <metric>report-mean-speed-cars</metric>
+    <metric>report-average-wait-time-cars</metric>
+    <metric>report-average-rider-score-group</metric>
+    <metric>report-average-walking-turtle-score</metric>
+    <metric>report-number-walking-turtles</metric>
+    <enumeratedValueSet variable="cluster-0">
+      <value value="21"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-1">
+      <value value="22"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-2">
+      <value value="19"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-3">
+      <value value="45"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-4">
+      <value value="14"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-5">
+      <value value="32"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-6">
+      <value value="13"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-7">
+      <value value="11"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="matching-algorythm">
+      <value value="&quot;None&quot;"/>
+      <value value="&quot;Random&quot;"/>
+      <value value="&quot;Min Distance&quot;"/>
+      <value value="&quot;Best!&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grid-size-x">
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grid-size-y">
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="power?">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="current-phase">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="ticks-per-cycle">
+      <value value="21"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="current-auto?">
+      <value value="true"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="Experiment 200 people" repetitions="40" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>report-total-co-emissions</metric>
+    <metric>report-number-riders</metric>
+    <metric>report-num-cars-stopped</metric>
+    <metric>report-mean-speed-cars</metric>
+    <metric>report-average-wait-time-cars</metric>
+    <metric>report-average-rider-score-group</metric>
+    <metric>report-average-walking-turtle-score</metric>
+    <metric>report-number-walking-turtles</metric>
+    <enumeratedValueSet variable="cluster-0">
+      <value value="24"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-1">
+      <value value="25"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-2">
+      <value value="21"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-3">
+      <value value="52"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-4">
+      <value value="16"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-5">
+      <value value="36"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-6">
+      <value value="14"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-7">
+      <value value="12"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="matching-algorythm">
+      <value value="&quot;None&quot;"/>
+      <value value="&quot;Random&quot;"/>
+      <value value="&quot;Min Distance&quot;"/>
+      <value value="&quot;Best!&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grid-size-x">
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grid-size-y">
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="power?">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="current-phase">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="ticks-per-cycle">
+      <value value="21"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="current-auto?">
+      <value value="true"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="Experiment 250 people" repetitions="40" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>report-total-co-emissions</metric>
+    <metric>report-number-riders</metric>
+    <metric>report-num-cars-stopped</metric>
+    <metric>report-mean-speed-cars</metric>
+    <metric>report-average-wait-time-cars</metric>
+    <metric>report-average-rider-score-group</metric>
+    <metric>report-average-walking-turtle-score</metric>
+    <metric>report-number-walking-turtles</metric>
+    <enumeratedValueSet variable="cluster-0">
+      <value value="30"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-1">
+      <value value="31"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-2">
+      <value value="26"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-3">
+      <value value="65"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-4">
+      <value value="20"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-5">
+      <value value="45"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-6">
+      <value value="18"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-7">
+      <value value="15"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="matching-algorythm">
+      <value value="&quot;None&quot;"/>
+      <value value="&quot;Random&quot;"/>
+      <value value="&quot;Min Distance&quot;"/>
+      <value value="&quot;Best!&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grid-size-x">
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grid-size-y">
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="power?">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="current-phase">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="ticks-per-cycle">
+      <value value="21"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="current-auto?">
+      <value value="true"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="Experiment 300 people" repetitions="40" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>report-total-co-emissions</metric>
+    <metric>report-number-riders</metric>
+    <metric>report-num-cars-stopped</metric>
+    <metric>report-mean-speed-cars</metric>
+    <metric>report-average-wait-time-cars</metric>
+    <metric>report-average-rider-score-group</metric>
+    <metric>report-average-walking-turtle-score</metric>
+    <metric>report-number-walking-turtles</metric>
+    <enumeratedValueSet variable="cluster-0">
+      <value value="36"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-1">
+      <value value="37"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-2">
+      <value value="32"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-3">
+      <value value="78"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-4">
+      <value value="24"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-5">
+      <value value="54"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-6">
+      <value value="22"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-7">
+      <value value="18"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="matching-algorythm">
+      <value value="&quot;None&quot;"/>
+      <value value="&quot;Random&quot;"/>
+      <value value="&quot;Min Distance&quot;"/>
+      <value value="&quot;Best!&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grid-size-x">
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grid-size-y">
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="power?">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="current-phase">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="ticks-per-cycle">
+      <value value="21"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="current-auto?">
+      <value value="true"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="Experiment 350 people" repetitions="40" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>report-total-co-emissions</metric>
+    <metric>report-number-riders</metric>
+    <metric>report-num-cars-stopped</metric>
+    <metric>report-mean-speed-cars</metric>
+    <metric>report-average-wait-time-cars</metric>
+    <metric>report-average-rider-score-group</metric>
+    <metric>report-average-walking-turtle-score</metric>
+    <metric>report-number-walking-turtles</metric>
+    <enumeratedValueSet variable="cluster-0">
+      <value value="42"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-1">
+      <value value="43"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-2">
+      <value value="37"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-3">
+      <value value="91"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-4">
+      <value value="28"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-5">
+      <value value="64"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-6">
+      <value value="25"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="cluster-7">
+      <value value="21"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="matching-algorythm">
+      <value value="&quot;None&quot;"/>
+      <value value="&quot;Random&quot;"/>
+      <value value="&quot;Min Distance&quot;"/>
+      <value value="&quot;Best!&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grid-size-x">
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="grid-size-y">
+      <value value="9"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="power?">
       <value value="true"/>
