@@ -7,7 +7,7 @@ Click on the separator `File`.
 Select the option `Open...`.  
 Select the file `NetLogo/Traffic Grid Goal.nlogo`.  
 
-[Opening](https://github.com/LivingCat/MSSI1819/blob/master/docs/open.gif)
+![](https://github.com/LivingCat/MSSI1819/blob/master/docs/open.gif)
 
 ---
 
@@ -18,7 +18,7 @@ Change the size for each cluster and the desired algorithm.
 Press the `Setup` button.  
 Start the simulation by pressing the `Go` button.   
 
-[Opening](https://github.com/LivingCat/MSSI1819/blob/master/docs/run.gif)
+![](https://github.com/LivingCat/MSSI1819/blob/master/docs/run.gif)
 ---
 
 ### Running the Experiments
@@ -30,7 +30,7 @@ Select the Experiment with the desired number of people.
 Press the `Run` button.  
 Choose the output files location.  
 
-[Opening](https://github.com/LivingCat/MSSI1819/blob/master/docs/exp.gif)
+![](https://github.com/LivingCat/MSSI1819/blob/master/docs/exp.gif)
 ---
 
 ### [Demo](link to video)
