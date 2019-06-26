@@ -352,7 +352,7 @@ to random-matching
       let aux-matches-list [ ]
       ask aux-matches [ set aux-matches-list lput self aux-matches-list ]
       ;set rider-score-group score-group aux-matches-list self
-      set rider-score-group score-group-final aux-matches-list self
+      set rider-score-group score-group aux-matches-list self
       set been-matched true
       set rider true
       set matches aux-matches
@@ -393,8 +393,7 @@ to distance-matching
    ask turtles with [rider = true][
       let aux-matches-list [ ]
       ask matches [ set aux-matches-list lput self aux-matches-list ]
-      ;set rider-score-group score-group aux-matches-list self
-      set rider-score-group score-group-final aux-matches-list self
+      set rider-score-group score-group aux-matches-list self
   ]
 
 end
@@ -442,9 +441,7 @@ to best-matching
           ]
         ]
 
-
-
-;        set rider-score-group max-score
+        set rider-score-group max-score
 
         set matches turtles with [member? self item max-score-index possible-groups]
         set been-matched true
@@ -453,7 +450,7 @@ to best-matching
           set been-matched true
         ]
         type "capacity/matches" type capacity type "/" print matches
-        set rider-score-group score-group-final  item max-score-index possible-groups self
+        set rider-score-group score-group  item max-score-index possible-groups self
       ]
     ]
   ]
@@ -462,12 +459,6 @@ end
 
 to-report score-person [person rider-turtle]
   let group (list person)
-  let social-result social-score group rider-turtle
-  let detour-result detour-score group rider-turtle
-  report detour-result * social-result
-end
-
-to-report score-group-final [group rider-turtle]
   let social-result social-score group rider-turtle
   let detour-result detour-score group rider-turtle
   report detour-result * social-result
@@ -1284,10 +1275,10 @@ ticks
 30.0
 
 PLOT
-430
-580
-648
-755
+945
+395
+1163
+570
 Average Wait Time of Cars
 Time
 Average Wait
@@ -1302,10 +1293,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot mean [wait-time] of turtles"
 
 PLOT
-205
-580
-421
-755
+1185
+185
+1401
+360
 Average Speed of Cars
 Time
 Average Speed
@@ -1361,10 +1352,10 @@ power?
 -1000
 
 PLOT
--18
-579
-196
-754
+945
+185
+1159
+360
 Stopped Cars
 Time
 Stopped Cars
@@ -1547,41 +1538,11 @@ NIL
 NIL
 0
 
-SLIDER
-965
-445
-1137
-478
-numFriendsMax
-numFriendsMax
-0
-10
-0.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-965
-395
-1137
-428
-num-passengers
-num-passengers
-0
-10
-0.0
-1
-1
-NIL
-HORIZONTAL
-
 INPUTBOX
+940
+15
 1005
-30
-1070
-90
+75
 cluster-0
 6.0
 1
@@ -1589,10 +1550,10 @@ cluster-0
 Number
 
 INPUTBOX
+1015
+15
 1080
-30
-1145
-90
+75
 cluster-1
 6.0
 1
@@ -1600,10 +1561,10 @@ cluster-1
 Number
 
 INPUTBOX
+1090
+15
 1155
-30
-1220
-90
+75
 cluster-2
 5.0
 1
@@ -1611,10 +1572,10 @@ cluster-2
 Number
 
 INPUTBOX
-1005
-100
-1070
-160
+1165
+15
+1230
+75
 cluster-3
 13.0
 1
@@ -1622,10 +1583,10 @@ cluster-3
 Number
 
 INPUTBOX
-1080
-100
-1145
-160
+940
+90
+1005
+150
 cluster-4
 4.0
 1
@@ -1633,10 +1594,10 @@ cluster-4
 Number
 
 INPUTBOX
-1155
-100
-1220
-160
+1015
+90
+1080
+150
 cluster-5
 9.0
 1
@@ -1644,10 +1605,10 @@ cluster-5
 Number
 
 INPUTBOX
-1005
-170
-1070
-230
+1095
+90
+1160
+150
 cluster-6
 4.0
 1
@@ -1655,10 +1616,10 @@ cluster-6
 Number
 
 INPUTBOX
-1080
-170
-1145
-230
+1170
+90
+1235
+150
 cluster-7
 3.0
 1
@@ -1666,10 +1627,10 @@ cluster-7
 Number
 
 PLOT
-682
-588
-882
-738
+1190
+395
+1390
+545
 Total CO Emissions
 Time
 Emission rate
@@ -1684,10 +1645,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot total-co-emissions"
 
 CHOOSER
-1015
-260
-1153
-305
+1255
+25
+1393
+70
 matching-algorythm
 matching-algorythm
 "Random" "Min Distance" "Best!" "None"
