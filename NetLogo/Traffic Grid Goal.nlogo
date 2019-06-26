@@ -351,8 +351,8 @@ to random-matching
 
       let aux-matches-list [ ]
       ask aux-matches [ set aux-matches-list lput self aux-matches-list ]
-      set rider-score-group score-group aux-matches-list self
-
+      ;set rider-score-group score-group aux-matches-list self
+      set rider-score-group score-group-final aux-matches-list self
       set been-matched true
       set rider true
       set matches aux-matches
@@ -393,7 +393,8 @@ to distance-matching
    ask turtles with [rider = true][
       let aux-matches-list [ ]
       ask matches [ set aux-matches-list lput self aux-matches-list ]
-      set rider-score-group score-group aux-matches-list self
+      ;set rider-score-group score-group aux-matches-list self
+      set rider-score-group score-group-final aux-matches-list self
   ]
 
 end
@@ -443,7 +444,7 @@ to best-matching
 
 
 
-        set rider-score-group max-score
+;        set rider-score-group max-score
 
         set matches turtles with [member? self item max-score-index possible-groups]
         set been-matched true
@@ -452,6 +453,7 @@ to best-matching
           set been-matched true
         ]
         type "capacity/matches" type capacity type "/" print matches
+        set rider-score-group score-group-final  item max-score-index possible-groups self
       ]
     ]
   ]
@@ -464,6 +466,13 @@ to-report score-person [person rider-turtle]
   let detour-result detour-score group rider-turtle
   report detour-result * social-result
 end
+
+to-report score-group-final [group rider-turtle]
+  let social-result social-score group rider-turtle
+  let detour-result detour-score group rider-turtle
+  report detour-result * social-result
+end
+
 
 to-report score-groups [possible-groups rider-turtle]
   let result-scores []
@@ -1574,7 +1583,7 @@ INPUTBOX
 1070
 90
 cluster-0
-42.0
+6.0
 1
 0
 Number
@@ -1585,7 +1594,7 @@ INPUTBOX
 1145
 90
 cluster-1
-43.0
+6.0
 1
 0
 Number
@@ -1596,7 +1605,7 @@ INPUTBOX
 1220
 90
 cluster-2
-37.0
+5.0
 1
 0
 Number
@@ -1607,7 +1616,7 @@ INPUTBOX
 1070
 160
 cluster-3
-91.0
+13.0
 1
 0
 Number
@@ -1618,7 +1627,7 @@ INPUTBOX
 1145
 160
 cluster-4
-28.0
+4.0
 1
 0
 Number
@@ -1629,7 +1638,7 @@ INPUTBOX
 1220
 160
 cluster-5
-64.0
+9.0
 1
 0
 Number
@@ -1640,7 +1649,7 @@ INPUTBOX
 1070
 230
 cluster-6
-25.0
+4.0
 1
 0
 Number
@@ -1651,7 +1660,7 @@ INPUTBOX
 1145
 230
 cluster-7
-21.0
+3.0
 1
 0
 Number
@@ -1682,7 +1691,7 @@ CHOOSER
 matching-algorythm
 matching-algorythm
 "Random" "Min Distance" "Best!" "None"
-3
+2
 
 MONITOR
 200
@@ -2143,31 +2152,33 @@ NetLogo 6.1.0
     <metric>report-average-walking-turtle-score</metric>
     <metric>report-number-walking-turtles</metric>
     <enumeratedValueSet variable="cluster-0">
-      <value value="42"/>
+      <value value="6"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-1">
-      <value value="43"/>
+      <value value="6"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-2">
-      <value value="37"/>
+      <value value="5"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-3">
-      <value value="91"/>
+      <value value="13"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-4">
-      <value value="28"/>
+      <value value="4"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-5">
-      <value value="64"/>
+      <value value="9"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-6">
-      <value value="25"/>
+      <value value="4"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cluster-7">
-      <value value="21"/>
+      <value value="3"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="matching-algorythm">
-      <value value="&quot;None&quot;"/>
+      <value value="&quot;Random&quot;"/>
+      <value value="&quot;Min Distance&quot;"/>
+      <value value="&quot;Best!&quot;"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="grid-size-x">
       <value value="9"/>
