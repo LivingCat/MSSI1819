@@ -27,7 +27,12 @@ Follow the Opening the project guide.
 Click on the separator `Tools`.  
 Select the option `BehaviorSpace`.  
 Select the Experiment with the desired number of people.
-Press the `Run` button.  
+Edit the Experiment, by pressing the `Edit` Button.  
+&nbsp;&nbsp;&nbsp;&nbsp;Change the size of each cluster.  
+&nbsp;&nbsp;&nbsp;&nbsp;Change the number of runs.  
+&nbsp;&nbsp;&nbsp;&nbsp;Change the matching algorithm.  
+&nbsp;&nbsp;&nbsp;&nbsp;Press the `Ok` button at the end.    
+Press the `Run` button.   
 Choose the output files location.  
 
 ![](https://github.com/LivingCat/MSSI1819/blob/master/docs/exp.gif)
