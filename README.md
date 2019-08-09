@@ -1,7 +1,7 @@
 # Carpool simulation with different matching algorithms
 
 (This readme provides a simple summary of the work for a more detailed desciption you can consult the [scientific paper](https://github.com/LivingCat/MSSI1819/blob/master/Ride_Sharing_in_FEUP__Last_Assignment.pdf))
-(Setup guide [here](##setup-guide))
+(Setup guide [here](#setup-guide))
 
 ## Description
 This project aims to simulate the way a closed community comes to the same destination currently and simulate the impact that different matching techniques have regarding the emissions of harmful gases to our atmosphere.
