@@ -1,5 +1,35 @@
-# MSSI1819
+# Carpool simulation with different matching algorithms
 
+(This readme provides a simple summary of the work for a more detailed desciption you can consult the [scientific paper](https://github.com/LivingCat/MSSI1819/blob/master/Ride_Sharing_in_FEUP__Last_Assignment.pdf))
+(Setup guide [here](##setup-guide))
+
+## Description
+This project aims to simulate the way a closed community comes to the same destination currently and simulate the impact that different matching techniques have regarding the emissions of harmful gases to our atmosphere.
+
+The matching techniques used are random, closest to starting point and a ”real life” algorithm that combines using the relationships between the rider and its passengers (friends, colleagues of the same year, colleagues of the same course and other students) and the detour distance added to the rider’s regular path.
+
+Our simulation uses the software NetLogo and the model Traffic Grid Goal which simulates traffic moving in a city grid.
+
+## Problem
+
+In this project the main problem we are tackling is how to reduce the emissions of pollutant gases with the use of ride sharing in a closed community in which users are commuting to same destination but with different starting points. As a secondary goal we will also analyse, the different matching algorithms effect on the traffic and the ”happiness” of the rider to give the ride to the people matched to him 
+
+## Controls
+
+In the controls you can change the number of people from each cluster to be "placed into the world" and the matching algorithm to be used
+
+![](https://github.com/LivingCat/MSSI1819/blob/master/docs/controls.png)
+
+## Scenarios
+//TODO
+### Random
+//TODO
+### Minimum distance
+//TODO
+### Real Life
+//TODO
+
+## Setup guide
 ### Opening the project
 
 Open NetLogo.  
